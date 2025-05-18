@@ -1,13 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException, status  # FastAPI utilities
-from sqlalchemy.orm import Session                              # For database access
-from app.database import SessionLocal                           # DB session
-from app.schemas.user import UserCreate                         # For typing/form parsing
-from app.models.user import User                                # SQLAlchemy model
-from app.auth.token import create_access_token                  # JWT creation
-from passlib.context import CryptContext                        # For password hashing
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+    Request,
+    Response,
+)  # FastAPI utilities
+from sqlalchemy.orm import Session  # For database access
+from app.database import SessionLocal  # DB session
+from app.schemas.user import UserCreate  # For typing/form parsing
+from app.models.user import User  # SQLAlchemy model
+
+# from app.auth.token import create_access_token                  # JWT creation
+from passlib.context import CryptContext  # For password hashing
+from app.auth.session_auth import get_current_user
 
 
 router = APIRouter()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 # Dependency to get DB session
 def get_db():
@@ -17,8 +28,9 @@ def get_db():
     finally:
         db.close()
 
+
 # Setup password hasher
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 # Password verification function
 def verify_password(password, hashed_password):

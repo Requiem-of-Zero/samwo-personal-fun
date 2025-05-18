@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 # This is the core class used to initialize your FastAPI app.
-
+from starlette.middleware.sessions import SessionMiddleware # Middleware for session tokens
 from app.database import engine, Base
 # These are used to create the database tables at startup with Base.metadata.create_all.
 
@@ -13,12 +13,16 @@ from app.routes import auth as auth_router
 
 app = FastAPI()  # Initializes the FastAPI app
 
+
+app.add_middleware(SessionMiddleware, secret_key="your-session-secret-key")
+
 # This creates all tables defined by your Base subclasses (e.g., User)
 # If the tables already exist, it does nothing
 Base.metadata.create_all(bind=engine) 
 
 app.include_router(user_router.router) # Register the /users route
-app.include_router(auth_router.router)
+app.include_router(auth_router.router) # Register the /auth routes
+
 
 @app.get("/health")
 def health():

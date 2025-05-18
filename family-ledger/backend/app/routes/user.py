@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.schemas.user import UserCreate, UserOut
 from app.crud.user import create_user
-from app.auth.dependencies import get_current_user
+from app.auth.session_auth import get_current_user
 from app.models.user import User
 
 router = APIRouter()  # Create a FastAPI router for user-related endpoints

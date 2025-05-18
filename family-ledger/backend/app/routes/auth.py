@@ -6,6 +6,7 @@ from app.models.user import User                                # SQLAlchemy mod
 from app.auth.token import create_access_token                  # JWT creation
 from passlib.context import CryptContext                        # For password hashing
 
+
 router = APIRouter()
 
 # Dependency to get DB session

@@ -18,7 +18,7 @@ def get_db():
         db.close()  # Always close the session after use
 
 
-@router.post("/users", response_model=UserOut)
+@router.post("/users/register", response_model=UserOut)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     # Optional: Check if user already exists (not yet implemented)
 

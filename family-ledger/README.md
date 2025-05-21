@@ -31,6 +31,7 @@ FamilyLedger is a sleek, dark-mode mobile app that helps families track and mana
 
 ## 📂 Project Structure
 
+```md
 backend/
 ├── app/
 │ ├── models/ # ORM models (User, Family, Expense, etc.)
@@ -44,6 +45,7 @@ mobile/
 └── App.tsx # Entry point
 
 ---
+```
 
 ## 📦 Setup Instructions
 

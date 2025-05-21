@@ -11,6 +11,8 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
     full_name: str | None = None
+    family_id: int | None = None
 
     class Config:
-        orm_mode = True  # Tells Pydantic to convert SQLAlchemy objects to dicts
+        # orm_mode = True  # Tells Pydantic to convert SQLAlchemy objects to dicts
+        from_attributes = True

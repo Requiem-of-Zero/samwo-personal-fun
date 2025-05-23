@@ -1,22 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
+from app.database import SessionLocal, get_db
 from app.schemas.user import UserCreate, UserOut
 from app.crud.user import create_user
 from app.auth.session_auth import get_current_user
 from app.models.user import User
 
 router = APIRouter()  # Create a FastAPI router for user-related endpoints
-
-
-# Dependency that gives us a database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db  # Gives the route access to the DB
-    finally:
-        db.close()  # Always close the session after use
-
 
 @router.post("/users/register", response_model=UserOut)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):

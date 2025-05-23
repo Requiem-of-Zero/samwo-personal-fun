@@ -10,6 +10,8 @@ from app.models import user
 from app.routes import user as user_router
 from app.routes import auth as auth_router
 from app.routes import family as family_router
+from app.routes import expense as expenses_router
+from app.routes import friend as friends_router
 # This includes the route handlers you’ll define in app/routes/user.py (like POST /users).
 
 app = FastAPI()  # Initializes the FastAPI app
@@ -23,7 +25,9 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(user_router.router) # Register the /users route
 app.include_router(auth_router.router) # Register the /auth routes
-app.include_router(family_router.router) #Register the /family routes
+app.include_router(family_router.router) # Register the /family routes
+app.include_router(expenses_router.router) # Register the /expenses routes
+app.include_router(friends_router.router) # Register the /friends routes
 
 @app.get("/health")
 def health():

@@ -18,3 +18,5 @@ class Family(Base):
         secondary=user_family_association,
         back_populates="families"
     )
+
+    expenses = relationship("Expense", back_populates="family")

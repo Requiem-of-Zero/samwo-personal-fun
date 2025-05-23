@@ -16,3 +16,6 @@ class UserOut(BaseModel):
     class Config:
         # orm_mode = True  # Tells Pydantic to convert SQLAlchemy objects to dicts
         from_attributes = True
+
+class FriendOut(UserOut):
+    can_view_expenses: bool

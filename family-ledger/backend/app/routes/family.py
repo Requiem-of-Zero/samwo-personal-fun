@@ -6,6 +6,8 @@ from app.schemas.family import FamilyCreate, FamilyOut
 from app.auth.session_auth import get_current_user
 from app.schemas.user import UserOut
 from app.models.user import User
+from app.models.expense import Expense
+from app.schemas.expense import ExpenseOut
 from typing import List
 
 router = APIRouter()
@@ -66,6 +68,20 @@ def join_family(
 
     return family  # Return the family the user joined
 
+@router.post("/me/set-primary-family/{family_id}")
+def set_primary_family(
+    family_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if family_id not in [f.id for f in current_user.families]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not a member of this family")
+    
+    current_user.primary_family_id = family_id
+    db.commit()
+
+    return {"message": f"Primary family set to ID {family_id}"}
+
 @router.get("/families/{family_id}", response_model=FamilyOut)
 def get_family(
     family_id: int,
@@ -117,3 +133,20 @@ def get_family_members(
     
 
     return family.members
+
+@router.get("/families/{family_id}/expenses", response_model=List[ExpenseOut])
+def get_family_expenses(
+    family_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # Check if the user belongs to this family
+    if family_id not in [f.id for f in current_user.families]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to view this family's expenses")
+
+    return (
+        db.query(Expense)
+        .filter(Expense.family_id == family_id)
+        .order_by(Expense.timestamp.desc())
+        .all()
+    )

@@ -9,13 +9,13 @@ from sqlalchemy import insert
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Create tables
+# 🔁 Create the tables
 Base.metadata.create_all(bind=engine)
 
-# Start DB session
+# Get a new DB session
 db: Session = SessionLocal()
 
-# --- Families ---
+# Create sample families
 family1 = Family(name="Wong Family", description="Family of Samuel Wong")
 family2 = Family(name="Tech Enthusiasts", description="A tech-savvy group")
 family3 = Family(name="Gym Bros", description="A gym family")
@@ -23,60 +23,42 @@ family3 = Family(name="Gym Bros", description="A gym family")
 db.add_all([family1, family2, family3])
 db.commit()
 
-# --- Users ---
+# Create sample users
 user1 = User(email="sam@example.com", full_name="Sam Wong", password_hash=pwd_context.hash("dummy"))
 user2 = User(email="jane@example.com", full_name="Jane Smith", password_hash=pwd_context.hash("dummy"))
 user3 = User(email="bob@example.com", full_name="Bob Li", password_hash=pwd_context.hash("dummy"))
-user4 = User(email="alice@example.com", full_name="Alice Chen", password_hash=pwd_context.hash("dummy"))
-user5 = User(email="tom@example.com", full_name="Tom Liu", password_hash=pwd_context.hash("dummy"))
+user4 = User(email="alice@example.com", full_name="Alice Tan", password_hash=pwd_context.hash("dummy"))
+user5 = User(email="mike@example.com", full_name="Mike Doe", password_hash=pwd_context.hash("dummy"))
 
-# Join families
+# Add users to families
 user1.families.append(family1)
 user2.families.append(family1)
 user2.families.append(family2)
 user3.families.append(family2)
 user4.families.append(family3)
-
 db.add_all([user1, user2, user3, user4, user5])
 db.commit()
 
-# --- Friendships ---
-user1.friends.append(user2)
+# Create friend relationships
+user1.friends.extend([user2, user3])
 user2.friends.append(user1)
-
-user1.friends.append(user3)
 user3.friends.append(user1)
-
 user2.friends.append(user4)
-user4.friends.append(user2)
-
-user3.friends.append(user4)
-user4.friends.append(user3)
-
-user4.friends.append(user5)  # user5 has no family or expenses, pure friend
-user5.friends.append(user4)  # user5 has no family or expenses, pure friend
+user4.friends.extend([user2, user3])
+user5.friends.append(user4)
+user4.friends.append(user5)
 db.commit()
 
-# --- Visibility settings ---
+# Add expense visibility settings
 db.execute(insert(friend_visibility).values([
     {"user_id": user2.id, "friend_id": user1.id, "can_view_expenses": True},
-    {"user_id": user1.id, "friend_id": user2.id, "can_view_expenses": True},
-
-    {"user_id": user3.id, "friend_id": user1.id, "can_view_expenses": False},  # user1 cannot see user3's expenses
-    {"user_id": user1.id, "friend_id": user3.id, "can_view_expenses": False},  # user1 cannot see user3's expenses
-
+    {"user_id": user3.id, "friend_id": user1.id, "can_view_expenses": False},
     {"user_id": user4.id, "friend_id": user2.id, "can_view_expenses": True},
-    {"user_id": user2.id, "friend_id": user4.id, "can_view_expenses": True},
-
     {"user_id": user4.id, "friend_id": user3.id, "can_view_expenses": True},
-    {"user_id": user3.id, "friend_id": user4.id, "can_view_expenses": True},
-
     {"user_id": user5.id, "friend_id": user4.id, "can_view_expenses": False},
-    {"user_id": user4.id, "friend_id": user5.id, "can_view_expenses": False},
-
 ]))
-
 db.commit()
+
 # --- Expenses ---
 expenses = [
     Expense(amount=45.00, description="Grocery run", timestamp=datetime.now(timezone.utc) - timedelta(days=1), payer_id=user1.id, family_id=family1.id),

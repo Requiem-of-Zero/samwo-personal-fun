@@ -5,6 +5,7 @@ from app.schemas.user import UserCreate, UserOut
 from app.crud.user import create_user
 from app.auth.session_auth import get_current_user
 from app.models.user import User
+from typing import List
 
 router = APIRouter()  # Create a FastAPI router for user-related endpoints
 
@@ -26,3 +27,10 @@ def get_me(current_user: User = Depends(get_current_user)):
         "email": current_user.email,
         "full_name": current_user.full_name,
     }
+
+@router.get("/users", response_model=List[UserOut])
+def list_users(db: Session = Depends(get_db)):
+    """
+    Return all users in the system.
+    """
+    return db.query(User).all()

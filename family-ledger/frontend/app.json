@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "FamilyLedger",
+    "slug": "family-ledger-logo",
+    "scheme": "familyledger",
+    "version": "1.0.0",
+    "sdkVersion": "50.0.0",
+    "platforms": ["ios", "android", "web"],
+    "orientation": "portrait",
+    "icon": "",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "",
+      "resizeMode": "contain",
+      "backgroundColor": "#2E2E33"
+    },
+    "assetBundlePatterns": [
+      "assets/animations/*",
+      "assets/animations/*.png",
+      "assets/images/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.samwo.familyledger",
+      "bundler": "metro"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "",
+        "backgroundColor": "#2E2E33",
+        "bundler": "metro"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.samwo.familyledger"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}

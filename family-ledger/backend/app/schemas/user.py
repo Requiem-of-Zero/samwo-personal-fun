@@ -19,3 +19,12 @@ class UserOut(BaseModel):
 
 class FriendOut(UserOut):
     can_view_expenses: bool
+
+class FriendRequestOut(BaseModel):
+    id: int
+    from_user_id: int
+    to_user_id: int
+    accepted: bool
+
+    class Config:
+        from_attributes=True

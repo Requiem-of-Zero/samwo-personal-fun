@@ -1,0 +1,39 @@
+Clear
+Store Prod1
+Load B
+Store Count
+
+loop1, Load Count
+	SkipCond 400
+	Jump Multiply1
+	Jump Done_A_B
+
+Multiply1, Load Prod1
+	Add A
+	Store Prod1
+	Load Count
+	Subt One
+	Store Count
+	Jump loop1
+
+Done_A_B, Load Prod1
+	Store Result
+	Load Result
+	Output
+	Halt
+	
+
+/ ----- Data -----
+A, DEC 2
+B, DEC 4
+C, DEC 4
+D, DEC 4
+
+Result, DEC 0
+Prod1, DEC 0
+Prod2, DEC 0
+Multiplicand, DEC 0
+Multiplier, DEC 0
+Count, DEC 0
+Prod, DEC 0
+One, DEC 1

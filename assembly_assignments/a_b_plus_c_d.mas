@@ -1,0 +1,70 @@
+/ ===================== Main Program =====================
+
+/ ---- First product: A * B → Prod1
+        LOAD A
+        STORE Multiplicand
+        LOAD B
+        STORE Multiplier
+        JNS Multiply          / runs: Prod = A * B
+        LOAD Prod
+        STORE Prod1
+
+/ ---- Second product: C * D → Prod2
+        LOAD C
+        STORE Multiplicand
+        LOAD D
+        STORE Multiplier
+        JNS Multiply          / runs: Prod = C * D
+        LOAD Prod
+        STORE Prod2
+
+/ ---- Sum both products → Result (optional OUTPUT)
+        LOAD Prod1
+        ADD  Prod2
+        STORE Result
+        LOAD Result
+        OUTPUT
+        HALT
+
+/ ===================== Subroutine =======================
+/ Multiply: computes Multiplicand * Multiplier into Prod
+Multiply, HEX 0              / return address storage for JNS
+
+        CLEAR
+        STORE Prod           / Prod = 0
+
+        LOAD Multiplier
+        STORE Count          / Count = Multiplier
+
+Multiplication_Loop,  LOAD Count
+        SKIPCOND 400         / if Count == 0 skip next (exit loop)
+        JUMP DoAdd
+        JUMP MDone
+
+Do_Add,  LOAD Prod
+        ADD Multiplicand     / Prod += Multiplicand
+        STORE Prod
+
+        LOAD Count
+        SUBT One             / Count--
+        STORE Count
+        JUMP MLoop
+
+Multiply_Done,  JUMPI Multiply      / return to caller
+
+/ ===================== Data =============================
+/ Inputs
+A,          DEC 2
+B,          DEC 4
+C,          DEC 3
+D,          DEC 5
+
+/ Outputs & temps
+Result,     DEC 0
+Prod1,      DEC 0
+Prod2,      DEC 0
+Multiplicand, DEC 0
+Multiplier,   DEC 0
+Count,      DEC 0
+Prod,       DEC 0
+One,        DEC 1

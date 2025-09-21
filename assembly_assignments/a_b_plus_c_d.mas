@@ -38,8 +38,8 @@ Multiply, HEX 0              / return address storage for JNS
 
 Multiplication_Loop,  LOAD Count
         SKIPCOND 400         / if Count == 0 skip next (exit loop)
-        JUMP DoAdd
-        JUMP MDone
+        JUMP Do_Add
+        JUMP Multiply_Done
 
 Do_Add,  LOAD Prod
         ADD Multiplicand     / Prod += Multiplicand
@@ -48,7 +48,7 @@ Do_Add,  LOAD Prod
         LOAD Count
         SUBT One             / Count--
         STORE Count
-        JUMP MLoop
+        JUMP Multiplication_Loop
 
 Multiply_Done,  JUMPI Multiply      / return to caller
 

@@ -1,0 +1,34 @@
+if, LOAD X
+	SUBT Y
+	SKIPCOND 800
+	JUMP then_1	
+	
+else_if, LOAD X
+	SUBT Z
+	SKIPCOND 400
+	JUMP then_2
+	JUMP else_1
+
+then_1, LOAD Y
+	ADD One
+	STORE Y
+	LOAD Y
+	OUTPUT
+	JUMP endif
+
+then_2, LOAD Y
+	SUBT One
+	STORE Y
+	JUMP endif
+
+else_1, LOAD Z
+	ADD One
+	STORE Z
+	JUMP endif
+
+endif, halt
+
+X, HEX 0001
+Y, HEX 0002
+Z, HEX 004
+One, HEX 0001

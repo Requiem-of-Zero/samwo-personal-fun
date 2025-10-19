@@ -1,0 +1,91 @@
+ORG 100
+
+/ Read 10 numbers from the user
+INPUT
+STORE Num1
+INPUT
+STORE Num2
+INPUT
+STORE Num3
+INPUT
+STORE Num4
+INPUT
+STORE Num5
+INPUT
+STORE Num6
+INPUT
+STORE Num7
+INPUT
+STORE Num8
+INPUT
+STORE Num9
+INPUT
+STORE Num10
+
+/ Initialize Max to the first number
+LOAD Num1
+STORE Max
+
+/ Initialize Loop Counter
+LOAD One
+STORE Index / Start from index 1
+
+/ Loop through check numbers 2-10
+Max_loop, LOAD Index
+	ADD One
+	STORE Index
+	
+	JNS GetNumber
+	STORE Temp
+
+	LOAD Temp
+	SUBT Max
+	SkipCond 800 / If temp > max, update the max
+	JUMP Continue_max_loop
+	JUMP Update_max
+
+Update_max, LOAD Temp
+	STORE Max
+
+Continue_max_loop, LOAD Index
+	SUBT Ten
+	SkipCond 400 / If the index is == 10, break
+	JUMP Max_loop
+
+/ After loop, output the max
+LOAD Max
+OUTPUT / Out the max value
+HALT
+
+/ =================== Sub Routines ====================
+GetNumber, HEX 0
+	LOAD Index
+	SUBT One
+	STORE Offset
+	LOAD BaseAddr
+	ADD Offset
+	STORE Ptr
+	LOADI Ptr
+	JUMPI GetNumber / return to where the sub routine was called
+
+/ =================== Data ============================
+Num1, DEC 0
+Num2, DEC 0
+Num3, DEC 0
+Num4, DEC 0
+Num5, DEC 0
+Num6, DEC 0
+Num7, DEC 0
+Num8, DEC 0
+Num9, DEC 0
+Num10, DEC 0
+/ ================== Logic Data ======================
+
+Max, DEC 0
+One, DEC 1
+Ten, DEC 10
+Temp, DEC 0
+Index, DEC 0
+Offset, DEC 0
+Ptr, DEC 0
+BaseAddr, HEX 134

@@ -54,7 +54,7 @@ Continue_max_loop, LOAD Index
 
 / After loop, output the max
 LOAD Max
-OUTPUT / Out the max value
+OUTPUT / Output the max value
 HALT
 
 / =================== Sub Routines ====================

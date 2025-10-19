@@ -22,10 +22,11 @@ STORE Num9
 INPUT
 STORE Num10
 
-/ Initialize Max to the first number
+/ Initialize Max and Sum and Min the first number
 LOAD Num1
 STORE Max
 STORE Sum
+STORE Min
 
 / Initialize Loop Counter
 LOAD One
@@ -90,6 +91,7 @@ Num10, DEC 0
 / ================== Logic Data ======================
 
 Max, DEC 0
+Min, DEC 0
 One, DEC 1
 Ten, DEC 10
 Temp, DEC 0

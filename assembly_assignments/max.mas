@@ -22,18 +22,39 @@ STORE Num9
 INPUT
 STORE Num10
 
-/ Initialize Max and Sum and Min the first number
+/ Initialize Max to the first number
 LOAD Num1
 STORE Max
 STORE Sum
-STORE Min
 
 / Initialize Loop Counter
 LOAD One
 STORE Index / Start from index 1
 
 / Loop through check numbers 2-10
-Max_loop, LOAD Index
+JNS Max_loop
+
+/ After loop, output the max
+LOAD Sum
+OUTPUT
+LOAD Max
+OUTPUT / Output the max value
+HALT
+
+/ =================== Sub Routines ====================
+GetNumber, HEX 0
+	LOAD Index
+	SUBT One
+	STORE Offset
+	LOAD BaseAddr
+	ADD Offset
+	STORE Ptr
+	LOADI Ptr
+	JUMPI GetNumber / return to where the sub routine was called
+
+/ Loop through check numbers 2-10
+Max_loop, HEX 0
+Max_loop_body, LOAD Index
 	ADD One
 	STORE Index
 	
@@ -57,25 +78,11 @@ Update_max, LOAD Temp
 Continue_max_loop, LOAD Index
 	SUBT Ten
 	SkipCond 400 / If the index is == 10, break
-	JUMP Max_loop
+	JUMP Max_loop_body
 
-/ After loop, output the max
-LOAD Sum
-OUTPUT
-LOAD Max
-OUTPUT / Output the max value
-HALT
+	JUMPI Max_loop
 
-/ =================== Sub Routines ====================
-GetNumber, HEX 0
-	LOAD Index
-	SUBT One
-	STORE Offset
-	LOAD BaseAddr
-	ADD Offset
-	STORE Ptr
-	LOADI Ptr
-	JUMPI GetNumber / return to where the sub routine was called
+/ Divide_Loop, 
 
 / =================== Data ============================
 Num1, DEC 0
@@ -91,7 +98,6 @@ Num10, DEC 0
 / ================== Logic Data ======================
 
 Max, DEC 0
-Min, DEC 0
 One, DEC 1
 Ten, DEC 10
 Temp, DEC 0
@@ -99,4 +105,4 @@ Sum, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0
-BaseAddr, HEX 13A
+BaseAddr, HEX 13D

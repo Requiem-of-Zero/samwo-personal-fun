@@ -35,7 +35,7 @@ STORE Index / Start from index 1
 / Loop through check numbers 2-10 to add sum and find max
 JNS Max_loop
 
-/ After loop, output the sum then the max
+/ After loop, output the sum, then the max
 LOAD Sum
 OUTPUT / Output the sum
 LOAD Max
@@ -53,7 +53,7 @@ GetNumber, HEX 0
 	LOADI Ptr
 	JUMPI GetNumber / return to where the sub routine was called
 
-/ Max loop subroutine to add 9 values after base address to sum and get the max value of the series of integers
+/ Max loop subroutine to add 9 values after the base address to sum and get the max value of the series of integers
 Max_loop, HEX 0
 Max_loop_body, LOAD Index
 	ADD One
@@ -107,4 +107,4 @@ Avg, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0
-BaseAddr, HEX 13D
+BaseAddr, HEX 13E

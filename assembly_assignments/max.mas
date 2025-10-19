@@ -22,21 +22,22 @@ STORE Num9
 INPUT
 STORE Num10
 
-/ Initialize Max to the first number
+/ Initialize max, min, and sum to the first number
 LOAD Num1
 STORE Max
 STORE Sum
+STORE Min
 
 / Initialize Loop Counter
 LOAD One
 STORE Index / Start from index 1
 
-/ Loop through check numbers 2-10
+/ Loop through check numbers 2-10 to add sum and find max
 JNS Max_loop
 
-/ After loop, output the max
+/ After loop, output the sum then the max
 LOAD Sum
-OUTPUT
+OUTPUT / Output the sum
 LOAD Max
 OUTPUT / Output the max value
 HALT
@@ -52,7 +53,7 @@ GetNumber, HEX 0
 	LOADI Ptr
 	JUMPI GetNumber / return to where the sub routine was called
 
-/ Loop through check numbers 2-10
+/ Max loop subroutine to add 9 values after base address to sum and get the max value of the series of integers
 Max_loop, HEX 0
 Max_loop_body, LOAD Index
 	ADD One
@@ -78,8 +79,7 @@ Update_max, LOAD Temp
 Continue_max_loop, LOAD Index
 	SUBT Ten
 	SkipCond 400 / If the index is == 10, break
-	JUMP Max_loop_body
-
+	JUMP Max_loop_body / Continue to the loop if index != 10.
 	JUMPI Max_loop
 
 / Divide_Loop, 
@@ -98,10 +98,12 @@ Num10, DEC 0
 / ================== Logic Data ======================
 
 Max, DEC 0
+Min, DEC 0
 One, DEC 1
 Ten, DEC 10
 Temp, DEC 0
 Sum, DEC 0
+Avg, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0

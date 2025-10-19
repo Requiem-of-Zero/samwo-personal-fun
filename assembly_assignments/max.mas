@@ -25,6 +25,7 @@ STORE Num10
 / Initialize Max to the first number
 LOAD Num1
 STORE Max
+STORE Sum
 
 / Initialize Loop Counter
 LOAD One
@@ -37,6 +38,11 @@ Max_loop, LOAD Index
 	
 	JNS GetNumber
 	STORE Temp
+
+	/ Accumulate the sum as we iterate through numbers for max
+	LOAD Sum
+	Add Temp
+	STORE Sum
 
 	LOAD Temp
 	SUBT Max
@@ -53,6 +59,8 @@ Continue_max_loop, LOAD Index
 	JUMP Max_loop
 
 / After loop, output the max
+LOAD Sum
+OUTPUT
 LOAD Max
 OUTPUT / Output the max value
 HALT
@@ -85,7 +93,8 @@ Max, DEC 0
 One, DEC 1
 Ten, DEC 10
 Temp, DEC 0
+Sum, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0
-BaseAddr, HEX 134
+BaseAddr, HEX 13A

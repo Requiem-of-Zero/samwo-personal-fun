@@ -42,10 +42,6 @@ STORE Index
 / Loop through check numbers 2-10 to find the minimum
 JNS Min_loop
 
-LOAD One
-STORE Index / Start from index 1
-
-
 / After loop, output the sum, then the max
 LOAD Sum
 OUTPUT / Output the sum
@@ -143,4 +139,4 @@ Avg, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0
-BaseAddr, HEX 157
+BaseAddr, HEX 155

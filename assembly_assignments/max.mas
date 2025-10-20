@@ -35,11 +35,22 @@ STORE Index / Start from index 1
 / Loop through check numbers 2-10 to add sum and find max
 JNS Max_loop
 
+LOAD One
+STORE Index
+
+JNS Min_loop
+
+LOAD One
+STORE Index / Start from index 1
+
+
 / After loop, output the sum, then the max
 LOAD Sum
 OUTPUT / Output the sum
 LOAD Max
 OUTPUT / Output the max value
+LOAD Min
+OUTPUT
 HALT
 
 / =================== Sub Routines ====================
@@ -73,6 +84,20 @@ Max_loop_body, LOAD Index
 	JUMP Continue_max_loop
 	JUMP Update_max
 
+Min_loop, HEX 0
+Min_loop_body, LOAD Index
+	ADD One
+	STORE Index
+
+	JNS GetNumber
+	STORE Temp
+
+	LOAD Temp
+	SUBT Min
+	SkipCond 800
+	JUMP Update_min
+	JUMP Continue_min_loop
+
 Update_max, LOAD Temp
 	STORE Max
 
@@ -81,6 +106,15 @@ Continue_max_loop, LOAD Index
 	SkipCond 400 / If the index is == 10, break
 	JUMP Max_loop_body / Continue to the loop if index != 10.
 	JUMPI Max_loop
+
+Update_min, LOAD Temp
+	STORE Min
+
+Continue_min_loop, LOAD Index
+	SUBT Ten
+	SkipCond 400 / If the index is == 10, break
+	JUMP Min_loop_body / Continue to the loop if index != 10.
+	JUMPI Min_loop
 
 / Divide_Loop, 
 
@@ -107,4 +141,4 @@ Avg, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0
-BaseAddr, HEX 13E
+BaseAddr, HEX 157

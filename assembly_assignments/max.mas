@@ -42,25 +42,49 @@ STORE Index
 / Loop through check numbers 2-10 to find the minimum
 JNS Min_loop
 
-/ After loop, output the sum, then the max
-LOAD Sum
-OUTPUT / Output the sum
+/ Loop through the sum and divide
+JNS Divide_loop
+
+/ After loops, output the sum, then the max
+LOAD Min
+OUTPUT / Output the min value
 LOAD Max
 OUTPUT / Output the max value
-LOAD Min
-OUTPUT
+LOAD Avg 
+OUTPUT / Output the average value
 HALT
 
 / =================== Sub Routines ====================
 GetNumber, HEX 0
-	LOAD Index
+	LOAD Index / 2 - 1 = 1
 	SUBT One
-	STORE Offset
+	STORE Offset / Offset from the base address
 	LOAD BaseAddr
-	ADD Offset
+	ADD Offset / 166 + 1 = 167
 	STORE Ptr
 	LOADI Ptr
-	JUMPI GetNumber / return to where the sub routine was called
+	JUMPI GetNumber / Return to where the sub routine was called
+
+/ Division subroutine to keep track of the number of times we can subtract 10 from the sum
+Divide_loop, HEX 0
+Divide_loop_body, LOAD Sum
+	STORE Temp / Store the dividend into temp
+	CLEAR
+	STORE Avg
+
+Divide_Check, LOAD Temp
+	SUBT Ten
+	SkipCond 000 / If Temp - 10 < 0, finish dividing
+	JUMP Div_Store
+	JUMP Div_Done
+
+Div_Store, STORE Temp
+	LOAD Avg
+	ADD One
+	STORE Avg
+	JUMP Divide_Check
+
+Div_Done, JUMPI Divide_loop
 
 / Max loop subroutine to add 9 values after the base address to sum and get the max value of the series of integers
 Max_loop, HEX 0
@@ -92,7 +116,7 @@ Min_loop_body, LOAD Index
 
 	LOAD Temp
 	SUBT Min
-	SkipCond 800
+	SkipCond 800 / If temp > min, continue with min loop
 	JUMP Update_min
 	JUMP Continue_min_loop
 
@@ -135,8 +159,9 @@ One, DEC 1
 Ten, DEC 10
 Temp, DEC 0
 Sum, DEC 0
+Quotient, DEC 0
 Avg, DEC 0
 Index, DEC 0
 Offset, DEC 0
 Ptr, DEC 0
-BaseAddr, HEX 155
+BaseAddr, HEX 166

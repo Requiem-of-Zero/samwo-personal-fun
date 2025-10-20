@@ -35,9 +35,11 @@ STORE Index / Start from index 1
 / Loop through check numbers 2-10 to add sum and find max
 JNS Max_loop
 
+/ Reset Loop Counter
 LOAD One
 STORE Index
 
+/ Loop through check numbers 2-10 to find the minimum
 JNS Min_loop
 
 LOAD One

@@ -1,0 +1,301 @@
+ORG 100
+
+/ Read 10 numbers from the user
+INPUT
+STORE Num1
+INPUT
+STORE Num2
+INPUT
+STORE Num3
+INPUT
+STORE Num4
+INPUT
+STORE Num5
+INPUT
+STORE Num6
+INPUT
+STORE Num7
+INPUT
+STORE Num8
+INPUT
+STORE Num9
+INPUT
+STORE Num10
+
+/ Initialize max, min, and sum to the first number
+LOAD Num1
+STORE Max
+STORE Sum
+STORE Min
+
+/ Initialize Loop Counter
+LOAD One
+STORE Index / Start from index 1
+
+/ Loop through check numbers 2-10 to add sum and find max
+JNS Max_loop
+
+/ Reset Loop Counter
+LOAD One
+STORE Index
+
+/ Loop through check numbers 2-10 to find the minimum
+JNS Min_loop
+
+/ Loop through the sum and divide
+JNS Divide_loop
+
+/ ** Compute Standard Deviation **
+CLEAR
+STORE SumSq / SumSq = Σ (Num[i] - Avg)^2
+
+CLEAR 
+STORE Index / Start index value at the beginning which is 0
+
+JNS Std_loop / Loop will computer sum of SumSq = Σ (Num[i] - Avg)^2
+
+/ Save the avg to mean to subtract from num[i]
+LOAD Avg
+STORE MeanSave / We need to save the avg since the division loop updates the avg to a new avg if we do it for SumSq / 10
+
+LOAD SumSq
+STORE Sum / Use the squared sum as the sum for the divive loop
+JNS Divide_loop / Use sumsq to divide by 10
+
+LOAD Avg 
+STORE Variance / Store the variance sumsq avg from the division loop
+
+LOAD MeanSave
+STORE Avg / Restore the original average value for the set of numbers
+
+LOAD Variance
+STORE DevN / Store the mean for sumsq into DevN
+
+JNS Sqrt / This subroutine will return the sqrt of DevN to Root
+
+LOAD Root
+Store StdDev / Store the sqrt result as the std deviation value
+
+/ End Standard Deviation Block
+
+/ After loops, output the sum, then the max
+LOAD Min
+OUTPUT / Output the min value
+LOAD Max
+OUTPUT / Output the max value
+LOAD Avg 
+OUTPUT / Output the average value
+LOAD StdDev
+OUTPUT / Output the standard deviation
+HALT
+
+/ =================== Sub Routines ====================
+GetNumber, HEX 0
+	LOAD Index / 2 - 1 = 1
+	SUBT One
+	STORE Offset / Offset from the base address
+	LOAD BaseAddr
+	ADD Offset / 166 + 1 = 167
+	STORE Ptr
+	LOADI Ptr
+	JUMPI GetNumber / Return to where the sub routine was called
+
+/ Division subroutine to keep track of the number of times we can subtract 10 from the sum
+Divide_loop, HEX 0
+Divide_loop_body, LOAD Sum
+	STORE Temp / Store the dividend into temp
+	CLEAR
+	STORE Avg
+
+Divide_Check, LOAD Temp
+	SUBT Ten
+	SkipCond 000 / If Temp - 10 < 0, finish dividing
+	JUMP Div_Store
+	JUMP Div_Done
+
+Div_Store, STORE Temp
+	LOAD Avg
+	ADD One
+	STORE Avg
+	JUMP Divide_Check
+
+Div_Done, JUMPI Divide_loop
+
+/ Max loop subroutine to add 9 values after the base address to sum and get the max value of the series of integers
+Max_loop, HEX 0
+Max_loop_body, LOAD Index
+	ADD One
+	STORE Index
+	
+	JNS GetNumber
+	STORE Temp
+
+	/ Accumulate the sum as we iterate through numbers for max
+	LOAD Sum
+	Add Temp
+	STORE Sum
+
+	LOAD Temp
+	SUBT Max
+	SkipCond 800 / If temp > max, update the max
+	JUMP Continue_max_loop
+	JUMP Update_max
+
+Min_loop, HEX 0
+Min_loop_body, LOAD Index
+	ADD One
+	STORE Index
+
+	JNS GetNumber
+	STORE Temp
+
+	LOAD Temp
+	SUBT Min
+	SkipCond 800 / If temp > min, continue with min loop
+	JUMP Update_min
+	JUMP Continue_min_loop
+
+Update_max, LOAD Temp
+	STORE Max
+
+Continue_max_loop, LOAD Index
+	SUBT Ten
+	SkipCond 400 / If the index is == 10, break
+	JUMP Max_loop_body / Continue to the loop if index != 10.
+	JUMPI Max_loop
+
+Update_min, LOAD Temp
+	STORE Min
+
+Continue_min_loop, LOAD Index
+	SUBT Ten
+	SkipCond 400 / If the index is == 10, break
+	JUMP Min_loop_body / Continue to the loop if index != 10.
+	JUMPI Min_loop
+
+/ StdDev Loop
+/ Computes SumSq = Σ(Num[i] - Mean)^2 for i=1..10
+Std_loop, HEX 0
+Std_loop_body, LOAD Index
+	ADD One
+	STORE Index
+
+	JNS GetNumber
+	STORE Temp
+
+	LOAD Temp
+	SUBT Avg
+	STORE Diff / Diff = Num[i] - Mean
+
+	/ Find the abolute value of Diff to square
+	LOAD Diff
+	SkipCond 000
+	JUMP Diff_positive
+	/ Negative case
+	CLEAR
+	SUBT Diff
+	STORE DiffAbs
+	JUMP Diff_abs
+
+Diff_positive, STORE DiffAbs
+Diff_abs, CLEAR
+	STORE DiffSq
+
+	LOAD DiffAbs
+	STORE LoopCounter
+
+Square_loop, LOAD LoopCounter
+	SkipCond 400
+	JUMP SqDo
+	JUMP SqDone
+
+SqDo, LOAD DiffSq
+	ADD DiffAbs
+	STORE DiffSq
+
+	LOAD LoopCounter
+	SUBT One
+	STORE LoopCounter
+	JUMP Square_loop
+
+SqDone, LOAD SumSq
+	ADD DiffSq
+	STORE SumSq
+
+	LOAD Index
+	SUBT Ten
+	SkipCond 400
+	JUMP Std_loop_body
+	JUMPI Std_loop
+
+/ Sqrt Routine
+/ Finds the square root value with odd subtraction method
+Sqrt, HEX 0
+SqrtBody, CLEAR
+	STORE Root / initialize root variable as 0 each time this subroutine is called
+
+	LOAD DevN
+	STORE Remainder
+
+	CLEAR
+	ADD One
+	STORE Odd
+
+Sqrt_loop, LOAD Remainder
+	SUBT Odd
+	SkipCond 000
+	JUMP SqrtCounter
+	JUMP SqrtDone
+
+SqrtCounter, STORE Remainder
+	LOAD Root
+	Add One
+	STORE Root
+
+	LOAD Odd
+	ADD Two
+	STORE Odd
+	JUMP Sqrt_loop
+
+SqrtDone, JUMPI Sqrt
+
+/ =================== Data ============================
+Num1, DEC 0
+Num2, DEC 0
+Num3, DEC 0
+Num4, DEC 0
+Num5, DEC 0
+Num6, DEC 0
+Num7, DEC 0
+Num8, DEC 0
+Num9, DEC 0
+Num10, DEC 0
+/ ================== Logic Data ======================
+
+Max, DEC 0
+Min, DEC 0
+One, DEC 1
+Two, DEC 2
+Ten, DEC 10
+Temp, DEC 0
+Sum, DEC 0
+Quotient, DEC 0
+Avg, DEC 0
+Index, DEC 0
+Offset, DEC 0
+Ptr, DEC 0
+BaseAddr, HEX 1B9
+
+/ ============= Std Deviation Data =================
+SumSq, DEC 0 / Σ (xi - Mean)^2
+LoopCounter, DEC 0
+MeanSave, DEC 0
+Variance, DEC 0
+StdDev, DEC 0
+DevN, DEC 0
+Root, DEC 0
+Odd, DEC 0
+Diff, DEC 0
+DiffAbs, DEC 0
+DiffSq, DEC 0
+Remainder, DEC 0

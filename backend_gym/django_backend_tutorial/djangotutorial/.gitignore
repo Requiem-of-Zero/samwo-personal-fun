@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Migrations (pick ONE approach below)
+# Option A (recommended): keep migrations tracked (comment out the next line)
+# Option B: ignore migrations EXCEPT keep __init__.py so Django sees the package
+**/migrations/**
+!**/migrations/__init__.py
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,6 @@
+- Packages to required for backend:
+  - Django
+  - djangorestframework
+  - python-dotenv
+  - psycopg[binary]
+  - pillow

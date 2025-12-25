@@ -1,4 +1,6 @@
-- Packages to required for backend:
+**Packages to required for backend:**
+---
+```
 Package                       Version
 ----------------------------- -------
 asgiref                       3.11.0
@@ -12,3 +14,7 @@ psycopg-binary                3.3.2
 PyJWT                         2.10.1
 python-dotenv                 1.2.1
 sqlparse                      0.5.5
+```
+
+- To seed the database run seed while in the project directory:
+> $ python manage.py seed

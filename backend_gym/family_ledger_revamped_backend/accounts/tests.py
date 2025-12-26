@@ -46,6 +46,9 @@ class UserServiceAPITests(APITestCase):
 
         self.assertNotIn("password", res.data) # Verifys that the API response does not leak password data
 
+    """
+    Create duplicate email test
+    """
     def test_create_user_register_duplicate_email_rejected(self):
         # Create a user in the DB
         User.objects.create_user(

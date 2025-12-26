@@ -64,3 +64,34 @@ class UserServiceAPITests(APITestCase):
         )
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST) # Ensure the return code is a 400 bad request if a duplicate email entry is detected
+
+    """
+    Login token tests
+    """
+    def test_login_returns_token(self):
+        User.objects.create_user( # Create user directly in the DB based on our setup mock payload
+            email=self.user_payload["email"],
+            username=self.user_payload["username"],
+            password=self.user_payload["password"],
+        )
+
+        res = self.client.post(self.login_url, {
+            "email": self.user_payload["email"],
+            "password": self.user_payload["password"],
+        }, format="json")
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK) # Ensure a 200 status code response from server
+
+        # Check if access or refresh (JWT tokens) exist in the response data
+        self.assertIn("access", res.data)
+        self.assertIn("refresh", res.data)
+
+    """
+    Authenticated tests
+    """
+    def test_get_current_user_requires_auth(self):
+        res = self.client.get(self.me_url) # Attempt to get a me/ url without authorization header
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED) # Expect to get a 401 unauthorized response
+
+    

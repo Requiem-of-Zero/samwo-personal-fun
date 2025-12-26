@@ -8,18 +8,21 @@ from rest_framework.test import APITestCase
 # Create your tests here.
 User = get_user_model()
 
+def create_user(email, username, password):
+    return User.objects.create_user(email=email, username=username, password=password)
+
 class UserServiceAPITests(APITestCase):
     """
     TDD implementation for user auth
     """
 
-    def setup(self):
+    def setUp(self):
         self.register_url = "/api/v1/auth/register/"
         self.login_url = "/api/v1/auth/login/"
         self.logout_url = "/api/v1/auth/logout/"
-        self.me_url = "/api/v1/auth/me"
+        self.me_url = "/api/v1/auth/me/"
         self.change_password_url = "/api/v1/auth/change-password/"
-        self.deactivate_url = "/api/v1/auth/deactivate"
+        self.deactivate_url = "/api/v1/auth/deactivate/"
 
         self.user_payload = {
             "email": "sam@example.com",
@@ -51,11 +54,7 @@ class UserServiceAPITests(APITestCase):
     """
     def test_create_user_register_duplicate_email_rejected(self):
         # Create a user in the DB
-        User.objects.create_user(
-            email="sam@example.com",
-            username="other",
-            password="password234"
-        )
+        create_user("sam@example.com", "other", "password234")
 
         res = self.client.post(
             self.register_url,
@@ -69,11 +68,7 @@ class UserServiceAPITests(APITestCase):
     Login token tests
     """
     def test_login_returns_token(self):
-        User.objects.create_user( # Create user directly in the DB based on our setup mock payload
-            email=self.user_payload["email"],
-            username=self.user_payload["username"],
-            password=self.user_payload["password"],
-        )
+        create_user(self.user_payload["email"], self.user_payload["username"], self.user_payload["password"]) # Create user directly in the DB based on our setup mock payload
 
         res = self.client.post(self.login_url, {
             "email": self.user_payload["email"],
@@ -94,4 +89,23 @@ class UserServiceAPITests(APITestCase):
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED) # Expect to get a 401 unauthorized response
 
-    
+    def test_get_current_user_returns_user(self):
+        create_user(self.user_payload["email"], self.user_payload["username"], self.user_payload["password"]) # Create user directly in the DB based on our setup mock payload
+
+        login_res = self.client.post(self.login_url, {
+            "email": self.user_payload["email"],
+            "password": self.user_payload["password"],
+        },format="json")
+
+        access_token = login_res.data["access"]
+
+        self.client.credentials( # Attach the token to future requests
+            HTTP_AUTHORIZATION=f"Bearer {access_token}"
+        )
+
+        me_res = self.client.get(self.me_url) # Call the /me endpoint
+
+        self.assertEqual(me_res.status_code, status.HTTP_200_OK) # Verify response is 200 ok
+
+        self.assertEqual(me_res.data["email"], self.user_payload["email"]) # Verify the response user is the same as the current user payload
+

@@ -45,3 +45,19 @@ class UserServiceAPITests(APITestCase):
         self.assertTrue(user.check_password(self.user_payload["password"])) # Use built in auth check_password() from django to verify password stored is not in plaintext
 
         self.assertNotIn("password", res.data) # Verifys that the API response does not leak password data
+
+    def test_create_user_register_duplicate_email_rejected(self):
+        # Create a user in the DB
+        User.objects.create_user(
+            email="sam@example.com",
+            username="other",
+            password="password234"
+        )
+
+        res = self.client.post(
+            self.register_url,
+            self.user_payload,
+            format="json",
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST) # Ensure the return code is a 400 bad request if a duplicate email entry is detected

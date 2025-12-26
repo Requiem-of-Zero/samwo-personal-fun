@@ -11,11 +11,11 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
 
-class MeView(generics.CreateAPIView):
+class MeView(generics.RetrieveAPIView):
     """
     POST /api/v1/auth/me/
     """
     serializer_class = MeSerializer
 
-    def get_current_user_obj(self):
+    def get_object(self):
         return self.request.user # Returns current authenticated user || null

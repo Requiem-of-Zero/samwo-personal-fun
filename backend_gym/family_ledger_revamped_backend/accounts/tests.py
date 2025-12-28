@@ -159,9 +159,36 @@ class UserServiceAPITests(APITestCase):
     Change password test:
         - Create a user
         - User must be authenticated
-        - Send post to /api/v1/auth/user/<pk:id>/update
+        - Old password must be correct
+        - New password should replace the old one in db
+        - User should be able to login with the new password
+        - User should NOT be able to login with the old password
         - Ensure we get a response back 200 ok
-        - Ensure we get a user that fits model
     """
     def test_change_password(self):
-        create_user(self.user_payload["email"], self.user_payload["username"], self.user_payload["password"])
+        create_user(self.user_payload["email"], self.user_payload["username"], self.user_payload["password"]) # Create the mock user
+
+        access, refresh = login_and_get_tokens(self.client, self.user_payload["email"], self.user_payload["password"], self.login_url) # Simulate a login and return of the access and refresh tokens
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}") # Attach the authorization header to simulate a logged in state
+
+        new_password = "NewStrongPass123!"
+
+        update_res = self.client.post(self.change_password_url, { # Test the password changing endpoint with the old and new password payload
+            "old_password": self.user_payload["password"],
+            "new_password": new_password,
+        }, format="json")
+
+        self.assertEqual(update_res.status_code, status.HTTP_200_OK) # Ensure the endpoint returns a 200 ok response
+
+        new_password_login = self.client.post(self.login_url, { # Test login with the new password
+            "email": self.user_payload["email"],
+            "username": self.user_payload["username"],
+            "password": new_password,
+        }, format="json")
+
+        self.assertEqual(new_password_login.status_code, status.HTTP_200_OK) # Ensure the endpoint returns a 200 ok response
+
+        self.assertIn("access", new_password_login.data)
+        self.assertIn("refresh", new_password_login.data)
+

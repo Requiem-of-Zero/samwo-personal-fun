@@ -181,14 +181,72 @@ class UserServiceAPITests(APITestCase):
 
         self.assertEqual(update_res.status_code, status.HTTP_200_OK) # Ensure the endpoint returns a 200 ok response
 
-        new_password_login = self.client.post(self.login_url, { # Test login with the new password
-            "email": self.user_payload["email"],
-            "username": self.user_payload["username"],
-            "password": new_password,
-        }, format="json")
+        self.client.credentials() # Simulate a fresh login attempt
 
-        self.assertEqual(new_password_login.status_code, status.HTTP_200_OK) # Ensure the endpoint returns a 200 ok response
+        new_access, new_refresh = login_and_get_tokens(self.client, self.user_payload["email"], new_password, self.login_url)
 
-        self.assertIn("access", new_password_login.data)
-        self.assertIn("refresh", new_password_login.data)
+        self.assertTrue(new_access)
+        self.assertTrue(new_refresh)
+        self.assertNotEqual(access, new_access)
+        self.assertNotEqual(refresh, new_refresh)
+
+    """
+    Change password with wrong old password
+        - Create a user
+        - Login with the user and get token
+        - Check that the access token and refresh token exist after login
+        - Use change-password endpoint to update the current user's password with incorrect old password
+          - Return a 400 bad request
+        - Old password still works after bad request
+    """
+    def test_change_password_with_wrong_old_password(self):
+        wrong_password="totally_wrong123"
+
+        create_user(
+            self.user_payload["email"],
+            self.user_payload["username"],
+            self.user_payload["password"],
+            )
+        
+        access, refresh = login_and_get_tokens(
+            self.client,
+            self.user_payload["email"],
+            self.user_payload["password"],
+            self.login_url
+            )
+        
+        self.assertTrue(access) # Ensure that the login provided a access token
+        self.assertTrue(refresh) # Ensure that the login provided a refresh token
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+        update_res = self.client.post(
+            self.change_password_url,
+            {
+                "old_password": wrong_password,
+                "new_password": "password123"
+            },
+            format="json"
+            )
+
+        self.assertEqual(update_res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        self.client.credentials()
+        post_change_login_res = self.client.post(
+            self.login_url,
+            {
+                "email": self.user_payload["email"],
+                "password": self.user_payload["password"]
+            },
+            format="json"
+            )
+        
+        self.assertEqual(post_change_login_res.status_code, status.HTTP_200_OK) # Ensure the login is returning ok after a failed password change
+        self.assertIn("access", post_change_login_res.data)
+
+    """
+    Test updating
+    """
+    def test_updating_user_fields(self):
+        test()
 

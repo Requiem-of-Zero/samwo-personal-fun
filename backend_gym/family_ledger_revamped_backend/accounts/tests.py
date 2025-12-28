@@ -11,11 +11,24 @@ User = get_user_model()
 def create_user(email, username, password):
     return User.objects.create_user(email=email, username=username, password=password)
 
+def login_and_get_tokens(client, email, password, login_url):
+    """
+    Logs in via /login/ and returns (access, refresh).
+    """
+    res = client.post(login_url, {
+        "email": email,
+        "password": password
+    }, format="json")
+
+    # access_token = res.data["access"], res.data["refresh"]
+    # print(access_token)
+    return res.data["access"], res.data["refresh"]
+
 class UserServiceAPITests(APITestCase):
+
     """
     TDD implementation for user auth
     """
-
     def setUp(self):
         self.register_url = "/api/v1/auth/register/"
         self.login_url = "/api/v1/auth/login/"
@@ -110,3 +123,45 @@ class UserServiceAPITests(APITestCase):
 
         self.assertEqual(me_res.data["email"], self.user_payload["email"]) # Verify the response user is the same as the current user payload
 
+    """
+    Logout tests:
+        - Client will log in, obtain a refresh token
+        - Attempts to refresh access token while logged in
+        - Client calls /logout/ with current refresh token
+        - Attempt to refresh again with the same token should return 401 unauthorized error
+    """
+    def test_logout_revokes_refresh_token(self):
+        create_user(self.user_payload["email"], self.user_payload["username"], self.user_payload["password"]) # Create user directly in the DB based on our setup mock payload
+
+        me_res = self.client.get(self.me_url) # Make a get request to the /api/v1/auth/me
+        self.assertEqual(me_res.status_code, status.HTTP_401_UNAUTHORIZED) # Ensure we get an unauthorized error on the /api/v1/auth/me/ endpoint before logged in
+
+        access, refresh = login_and_get_tokens(
+            self.client, self.user_payload["email"], self.user_payload["password"], self.login_url
+        )
+
+        first_refresh = self.client.post(self.refresh_url, {"refresh": refresh}, format="json") # Make a post request to the refresh endpoint after logging in
+        self.assertEqual(first_refresh.status_code, status.HTTP_200_OK) # Ensure we get a 200 ok response
+        self.assertIn("access", first_refresh.data) # Ensure the response data has a new access token
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}") # Add auth header to client credentials for logout
+
+        me_res2 = self.client.get(self.me_url) # Make a get request to the /api/v1/auth/me
+        self.assertEqual(me_res2.status_code, status.HTTP_200_OK) # Ensure we are getting a ok response while logged in
+
+        logout_res = self.client.post(self.logout_url, {"refresh": refresh}, format="json")
+        self.assertEqual(logout_res.status_code, status.HTTP_200_OK) # Ensure the logout endpoint returned a ok response
+
+        second_refresh = self.client.post(self.refresh_url, {"refresh": refresh}, format="json")
+        self.assertEqual(second_refresh.status_code, status.HTTP_401_UNAUTHORIZED) # Ensure the second refresh is unauthorized to indicate the user is logged out
+
+    """
+    Change password test:
+        - Create a user
+        - User must be authenticated
+        - Send post to /api/v1/auth/user/<pk:id>/update
+        - Ensure we get a response back 200 ok
+        - Ensure we get a user that fits model
+    """
+    def test_change_password(self):
+        create_user(self.user_payload["email"], self.user_payload["username"], self.user_payload["password"])

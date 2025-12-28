@@ -33,16 +33,23 @@ class Command(BaseCommand):
                     self.style.WARNING(f"User {data['email']} already exists")
                 )
                 continue
+            
+            if data.get("is_superuser"):
+                admin_user = User.objects.create_superuser(
+                    email=data["email"],
+                    username=data["username"],
+                    password=data["password"],
+                )
+            else: 
+                user = User.objects.create_user(
+                    email=data["email"],
+                    username=data["username"],
+                    password=data["password"]
+                )
 
-            user = User.objects.create_user(
-                email=data["email"],
-                username=data["username"],
-                password=data["password"]
-            )
-
-            user.is_staff = data.get("is_staff", False)
-            user.is_superuser = data.get("is_superuser", False)
-            user.save()
+                user.is_staff = data.get("is_staff", False)
+                user.is_superuser = data.get("is_superuser", False)
+                user.save()
 
             self.stdout.write(
                 self.style.SUCCESS(f"Created user {data["email"]}")

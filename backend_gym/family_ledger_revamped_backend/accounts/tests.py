@@ -275,3 +275,47 @@ class UserServiceAPITests(APITestCase):
 
         self.assertEqual(update_username_res.status_code, status.HTTP_200_OK) # Ensure 200 ok response after update
         self.assertEqual(update_username_res.data["username"], new_username)
+
+    """
+    Test account deactivation
+    """
+    def test_deactivate_user_blocks_login(self):
+        create_user(
+            self.user_payload['email'],
+            self.user_payload['username'],
+            self.user_payload['password'],
+        )
+
+        access, refresh = login_and_get_tokens(
+            self.client,
+            self.user_payload["email"],
+            self.user_payload["password"],
+            self.login_url
+        )
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+        deactivation_res = self.client.post(
+            self.deactivate_url,
+            {
+                "refresh": refresh
+            },
+            format="json"
+        )
+
+        self.assertEqual(deactivation_res.status_code, status.HTTP_200_OK) # Ensure a 200 ok response from a successful deactivation
+
+        post_deactivation_login_res = self.client.post(
+            self.login_url,
+            {
+                "email": self.user_payload["email"],
+                "password": self.user_payload["password"]
+            },
+            format="json"
+        )
+
+        self.assertIn(post_deactivation_login_res.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]) # Ensure the response for login attempt to a deactivated account is 403 or 401
+
+
+
+

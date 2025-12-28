@@ -245,8 +245,33 @@ class UserServiceAPITests(APITestCase):
         self.assertIn("access", post_change_login_res.data)
 
     """
-    Test updating
+    Test updating username for a user
     """
-    def test_updating_user_fields(self):
-        test()
+    def test_updating_username_success(self):
+        create_user(
+            self.user_payload["email"],
+            self.user_payload["username"],
+            self.user_payload["password"]
+        )
 
+        access, refresh = login_and_get_tokens(
+            self.client,
+            self.user_payload["email"],
+            self.user_payload["password"],
+            self.login_url
+        )
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+        new_username="sungjinwong"
+
+        update_username_res = self.client.post(
+            self.update_username_url,
+            {
+                "username": new_username
+            },
+            format="json"
+            )
+
+        self.assertEqual(update_username_res.status_code, status.HTTP_200_OK) # Ensure 200 ok response after update
+        self.assertEqual(update_username_res.data["username"], new_username)

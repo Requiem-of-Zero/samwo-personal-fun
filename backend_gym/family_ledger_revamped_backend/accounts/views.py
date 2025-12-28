@@ -13,9 +13,24 @@ class RegisterView(generics.CreateAPIView):
 
 class MeView(generics.RetrieveAPIView):
     """
-    POST /api/v1/auth/me/
+    GET /api/v1/auth/me/
     """
     serializer_class = MeSerializer
 
     def get_object(self):
         return self.request.user # Returns current authenticated user || null
+
+class LogoutView(generics.CreateAPIView):
+    """
+    """
+class ChangePasswordView(generics.CreateAPIView):
+    """
+    
+    """
+class UpdateUserView(generics.CreateAPIView):
+    """
+    
+    """
+class DeactivateUserView(generics.CreateAPIView):
+    """
+    """

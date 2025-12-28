@@ -21,6 +21,7 @@ class UserServiceAPITests(APITestCase):
         self.login_url = "/api/v1/auth/login/"
         self.logout_url = "/api/v1/auth/logout/"
         self.me_url = "/api/v1/auth/me/"
+        self.refresh_url = "/api/v1/auth/refresh/" 
         self.change_password_url = "/api/v1/auth/change-password/"
         self.deactivate_url = "/api/v1/auth/deactivate/"
 

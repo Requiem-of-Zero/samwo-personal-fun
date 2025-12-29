@@ -129,10 +129,24 @@ from rest_framework import generics
 #         return self.update(request, *args, **kwargs)
 
 #     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
-class SnippetList(generics.ListCreateAPIView):
-    queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
+#         return self.destroy(request, *args, **kwargs)z
+class SnippetList(APIView):
+    """
+    List all snippets, or create a new snippet.
+    """
+
+    def get(self, request, format=None):
+        snippets = Snippet.objects.all()
+        serializer = SnippetSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SnippetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()

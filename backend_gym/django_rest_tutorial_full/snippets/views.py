@@ -130,6 +130,15 @@ from django.contrib.auth.models import User
 
 #     def delete(self, request, *args, **kwargs):
 #         return self.destroy(request, *args, **kwargs)
+
+@api_view(["GET"])
+def api_root(request, format=None):
+    return Response(
+        {
+            "users": reverse("user-list", request=request, format=format),
+            "snippets": reverse("snippet-list", request=request, format=format)
+        }
+    )
 class SnippetList(generics.ListCreateAPIView):
     """
     List all snippets, or create a new snippet.

@@ -4,7 +4,7 @@ import {
   LoginSchema,
   type RegisterInput,
   type LoginInput,
-} from "@/src/shared/validators/auth";
+} from "../../shared/validators/auth";
 import { hashPassword, verifyPassword } from "../auth/password";
 import {
   generateSessionToken,

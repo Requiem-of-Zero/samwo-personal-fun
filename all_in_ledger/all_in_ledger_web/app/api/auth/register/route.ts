@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import {
   register,
   AuthError,
-} from "../../../../src/server/services/auth.service";
+} from "@/src/server/services/auth.service";
 import { ZodError } from "zod";
-import { SESSION_COOKIE_NAME } from "../../../..//src/server/auth/constants";
+import { SESSION_COOKIE_NAME } from "@/src/server/auth/constants";
 
 export async function POST(req: Request) {
   try {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUserFromRequest } from "../../../..//src/server/auth/currentUser";
+import { getCurrentUserFromRequest } from "@/src/server/auth/currentUser";
 
 export async function GET(req: Request) {
   const user = await getCurrentUserFromRequest(req);

@@ -3,10 +3,10 @@ import { prisma } from "../db/prisma";
 
 // Import the Next route handlers we *will* implement next.
 // (These imports will fail until the files exist — that’s normal in TDD.)
-import { POST as registerPOST } from "../../../app/api/auth/register/route";
-import { POST as loginPOST } from "../../../app/api/auth/login/route";
-import { GET as meGET } from "../../../app/api/auth/me/route";
-import { POST as logoutPOST } from "../../../app/api/auth/logout/route";
+import { POST as registerPOST } from "@/app/api/auth/register/route";
+import { POST as loginPOST } from "@/app/api/auth/login/route";
+import { GET as meGET } from "@/app/api/auth/me/route";
+import { POST as logoutPOST } from "@/app/api/auth/logout/route";
 import { SESSION_COOKIE_NAME } from "../auth/constants";
 import { generateSessionToken, hashSessionToken } from "../auth/session";
 

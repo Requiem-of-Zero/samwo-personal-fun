@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../src/server/db/prisma";
-import { hashSessionToken } from "../../../../src/server/auth/session";
-import { SESSION_COOKIE_NAME } from "../../../../src/server/auth/constants";
-import { getRawSessionTokenFromRequest } from "../../../../src/server/auth/currentUser";
+import { prisma } from "@/src/server/db/prisma";
+import { hashSessionToken } from "@/src/server/auth/session";
+import { SESSION_COOKIE_NAME } from "@/src/server/auth/constants";
+import { getRawSessionTokenFromRequest } from "@/src/server/auth/currentUser";
 
 export async function POST(req: Request) {
   const rawSessionToken = getRawSessionTokenFromRequest(req);

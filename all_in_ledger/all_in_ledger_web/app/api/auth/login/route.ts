@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { login, AuthError } from "../../../../src/server/services/auth.service";
-
-const SESSION_COOKIE_NAME = "session";
+import { SESSION_COOKIE_NAME } from "../../../../src/server/auth/constants";
 
 export async function POST(req: Request) {
   try {

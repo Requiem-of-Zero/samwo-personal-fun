@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "@/app/generated/prisma"
+  output   = "../app/generated/prisma"
   engineType = "library"
 }
 
@@ -25,6 +25,10 @@ enum FamilyMemberRole {
   MEMBER
 }
 
+enum Provders {
+  GOOGLE
+}
+
 model User {
   id Int @id @default(autoincrement())
   email String @unique
@@ -37,6 +41,7 @@ model User {
   updatedAt DateTime @updatedAt
   sessions Session[]
   createdFamilies Family[] @relation("FamilyCreatedBy")
+  oauthAccounts OAuthAccount[]
   familyMember FamilyMember?
 }
 
@@ -74,4 +79,18 @@ model FamilyMember {
 
   @@unique([familyId, userId])
   @@index([familyId])
+}
+
+model OAuthAccount {
+  id Int @id @default(autoincrement())
+  userId Int
+  provider Provders
+  providerAccountId String
+  email String @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }

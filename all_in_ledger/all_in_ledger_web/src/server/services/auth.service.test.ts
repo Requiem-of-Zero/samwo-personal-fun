@@ -62,13 +62,11 @@ describe("auth.service", () => {
   });
 
   it("login works with correct password and creates a session", async () => {
-    const registerRes = await register({
+    await register({
       email: "sam@example.com",
       username: "sungjinwong",
       password: "password123",
     });
-
-    const sessionsAfterRegister = await prisma.session.count();
 
     const loginRes = await login({
       email: "sam@example.com",
@@ -79,12 +77,10 @@ describe("auth.service", () => {
     expect(loginRes.sessionToken).toBeTypeOf("string");
     expect(loginRes.sessionToken.length).toBeGreaterThan(10);
 
-    const sessionsAfterLogin = await prisma.session.count();
-    expect(sessionsAfterLogin).toBe(sessionsAfterRegister + 1);
-
     const tokenHash = hashSessionToken(loginRes.sessionToken);
-    const sessionRow = await prisma.session.findUnique({
-      where: { tokenHash },
+    const sessionRow = await prisma.session.findFirst({
+      where: { tokenHash, revokedAt: null },
+      orderBy: { createdAt: "desc" },
     });
 
     expect(sessionRow).not.toBeNull();

@@ -25,8 +25,19 @@ enum FamilyMemberRole {
   MEMBER
 }
 
-enum Provders {
+enum OAuthProvders {
   GOOGLE
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+}
+
+enum CategoryType {
+  EXPENSE
+  INCOME
+  BOTH
 }
 
 model User {
@@ -42,7 +53,23 @@ model User {
   sessions Session[]
   createdFamilies Family[] @relation("FamilyCreatedBy")
   oauthAccounts OAuthAccount[]
+  transactions Transaction[]
   familyMember FamilyMember?
+  deletedAt DateTime?
+}
+
+model OAuthAccount {
+  id Int @id @default(autoincrement())
+  userId Int
+  provider OAuthProvders
+  providerAccountId String
+  email String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -61,8 +88,11 @@ model Family {
   id Int @id @default(autoincrement())
   name String
   createdBy Int
+  transactions Transaction[]
+  transactionCategories TransactionCategory[]
   createdAt DateTime @default(now())
-
+  deletedAt DateTime?
+  
   creator User @relation(fields: [createdBy], references: [id], "FamilyCreatedBy")
   members FamilyMember[]
 }
@@ -73,6 +103,8 @@ model FamilyMember {
   userId Int @unique
   memberRole FamilyMemberRole @default(MEMBER)
   joinedAt DateTime @default(now())
+  leftAt DateTime?
+  isActive Boolean @default(true)
 
   family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -81,16 +113,38 @@ model FamilyMember {
   @@index([familyId])
 }
 
-model OAuthAccount {
+model Transaction {
   id Int @id @default(autoincrement())
-  userId Int
-  provider Provders
-  providerAccountId String
-  email String @unique
+  familyId Int?
+  categoryId Int?
+  createdByUserId Int
+  amountCents Int
+  type TransactionType
+  merchant String?
+  note String?
+  occurredAt DateTime @default(now())
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family? @relation(fields: [familyId], references: [id], onDelete: SetNull)
+  createdBy User @relation(fields: [createdByUserId], references: [id])
+  category TransactionCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  @@unique([provider, providerAccountId])
-  @@index([userId])
+  @@index([familyId, occurredAt, createdByUserId, categoryId])
+}
+
+model TransactionCategory {
+  id Int @id @default(autoincrement())
+  familyId Int
+  name String
+  type CategoryType @default(EXPENSE)
+  isArchived Boolean @default(false)
+  createdAt DateTime @default(now())
+  transactions Transaction[]
+
+  family Family @relation(fields: [familyId], references: [id])
+
+  @@index([familyId])
+  @@unique([familyId, name]) // Prevents duplicate category names per family
 }

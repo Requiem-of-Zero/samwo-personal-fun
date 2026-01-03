@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { prisma } from "../db/prisma";
-import { register, login, AuthError } from "./auth.service";
+import { register, login, HttpError } from "./auth.service";
 import { hashSessionToken } from "../auth/session";
 
 beforeEach(async () => {

@@ -13,7 +13,7 @@ import {
 } from "../auth/session";
 
 // A small error helper for clean test assertions
-export class AuthError extends Error {
+export class HttpError extends Error {
   public status: number;
 
   constructor(message: string, status: number) {
@@ -41,7 +41,7 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
     where: { email: data.email },
   });
 
-  if (existing) throw new AuthError("Email already in use", 409);
+  if (existing) throw new HttpError("Email already in use", 409);
 
   const passwordHash = await hashPassword(data.password);
 
@@ -101,12 +101,12 @@ export async function login(input: LoginInput): Promise<AuthResult> {
   const data = LoginSchema.parse(input);
 
   const user = await prisma.user.findUnique({ where: { email: data.email } });
-  if (!user) throw new AuthError("No user found. Try a different login.", 401);
+  if (!user) throw new HttpError("No user found. Try a different login.", 401);
 
-  if (!user.isActive) throw new AuthError("Account disabled", 403);
+  if (!user.isActive) throw new HttpError("Account disabled", 403);
 
   const ok = await verifyPassword(user.passwordHash, data.password);
-  if (!ok) throw new AuthError("Invalid email or password", 401);
+  if (!ok) throw new HttpError("Invalid email or password", 401);
 
   const sessionToken = generateSessionToken();
   const tokenHash = hashSessionToken(sessionToken);

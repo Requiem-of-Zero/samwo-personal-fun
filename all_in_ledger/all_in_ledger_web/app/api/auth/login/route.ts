@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { login, AuthError } from "@/src/server/services/auth.service";
+import { login, HttpError } from "@/src/server/services/auth.service";
 import { SESSION_COOKIE_NAME } from "@/src/server/auth/constants";
 
 export async function POST(req: Request) {
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     return res;
   } catch (err: unknown) {
-    if (err instanceof AuthError) {
+    if (err instanceof HttpError) {
       return NextResponse.json({ error: err.message }, { status: err.status });
     }
 

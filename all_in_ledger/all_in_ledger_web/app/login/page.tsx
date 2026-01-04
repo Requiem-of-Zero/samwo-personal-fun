@@ -8,7 +8,7 @@ export default async function LoginPage() {
   const cookieString = (await cookieStore).toString();
 
   const req = new Request("http://localhost/login", {
-    headers: { cookie: cookieString },
+    headers: { cookies: cookieString },
   });
 
   const user = await getCurrentUserFromRequest(req);

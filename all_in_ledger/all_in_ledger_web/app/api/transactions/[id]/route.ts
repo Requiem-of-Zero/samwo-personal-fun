@@ -53,6 +53,11 @@ export async function GET(
   }
 }
 
+/*
+ * PATCH /api/transactions/:id
+ * Updates a single transaction id from header, the request will contain the body of the payload
+ */
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -106,6 +111,11 @@ export async function PATCH(
     );
   }
 }
+
+/*
+ * DELETE /api/transactions/:id
+ * Gets a single transaction by id for the logged in user and updates the deletedAt to simulate a soft deletion of a transaction
+ */
 
 export async function DELETE(
   req: Request,

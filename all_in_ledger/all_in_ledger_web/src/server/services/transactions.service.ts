@@ -1,5 +1,9 @@
 import { prisma } from "@/src/server/db/prisma";
-import type { CreateTransactionInput, ListTransactionQuery } from "@/src/shared/validators/transactions";
+import type {
+  CreateTransactionInput,
+  ListTransactionQuery,
+  TransactionId,
+} from "@/src/shared/validators/transactions";
 
 /*
 Creates a transaction for the given user
@@ -23,7 +27,10 @@ export async function createTransactionForUser(
   return transaction;
 }
 
-export async function listTransactionsForUser(userId: number, query: ListTransactionQuery) {
+export async function listTransactionsForUser(
+  userId: number,
+  query: ListTransactionQuery,
+) {
   const { from, to, familyId } = query;
 
   return prisma.transaction.findMany({
@@ -40,5 +47,17 @@ export async function listTransactionsForUser(userId: number, query: ListTransac
         : {}),
     },
     orderBy: { occurredAt: "desc" },
+  });
+}
+
+export async function getTransactionForUserById(
+  userId: number,
+  transactionId: TransactionId,
+) {
+  return prisma.transaction.findFirst({
+    where: {
+      createdByUserId: userId,
+      id: transactionId,
+    },
   });
 }

@@ -54,7 +54,7 @@ model User {
   createdFamilies Family[] @relation("FamilyCreatedBy")
   oauthAccounts OAuthAccount[]
   transactions Transaction[]
-  familyMember FamilyMember?
+  familyMembers FamilyMember[]
   deletedAt DateTime?
 }
 
@@ -100,7 +100,7 @@ model Family {
 model FamilyMember {
   id Int @id @default(autoincrement())
   familyId Int
-  userId Int @unique
+  userId Int 
   memberRole FamilyMemberRole @default(MEMBER)
   joinedAt DateTime @default(now())
   leftAt DateTime?

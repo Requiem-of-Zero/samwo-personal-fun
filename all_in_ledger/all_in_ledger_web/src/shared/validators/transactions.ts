@@ -2,6 +2,11 @@ import { z } from "zod";
 
 export const TransactionTypeSchema = z.enum(["EXPENSE", "INCOME"]);
 
+export const TransactionIdSchema = z.coerce
+  .number()
+  .int("Transaction id must be an integer")
+  .positive("Transaction id must be > 0");
+
 export const CreateTransactionSchema = z.object({
   type: TransactionTypeSchema,
   amountCents: z
@@ -32,8 +37,10 @@ export const ListTransactionSchema = z
     path: ["from"],
   });
 
-  export type CreateTransactionInput = z.infer<typeof CreateTransactionSchema>
+export type TransactionId = z.infer<typeof TransactionIdSchema>
 
-  export type ListTransactionQuery = z.infer<typeof ListTransactionSchema>
+export type CreateTransactionInput = z.infer<typeof CreateTransactionSchema>;
 
-  export type TransactionType = z.infer<typeof TransactionTypeSchema>
+export type ListTransactionQuery = z.infer<typeof ListTransactionSchema>;
+
+export type TransactionType = z.infer<typeof TransactionTypeSchema>;

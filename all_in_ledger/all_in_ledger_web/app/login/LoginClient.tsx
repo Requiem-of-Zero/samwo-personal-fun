@@ -48,36 +48,23 @@ export default function LoginClient() {
     setIsSubmitting(false);
   }
 
-  // Handles Google Oauth by redirecting to /api/auth/google/start endpoint
-  async function handleGoogleLogin() {
-    /*
-     * Triggers this flow:
-     * 1. Get /api/auth/google/start
-     * 2. Redirect to Google consent screen
-     * 3. Google redirects back to /api/auth/google/callback
-     * 4. Call back sets SESSION_COOKIE_NAME and redirects to APP_URL
-     */
-    window.localStorage.href = "/api/auth/google/start";
-  }
-
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 shadow-lg">
+    <main className="min-h-screen bg-primary-bg text-primary-text flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-card border border-border bg-surface-bg p-6 shadow-card">
         {/* Title */}
         <h1 className="text-2xl font-semibold tracking-tight">
           {mode === "login" ? "Login" : "Create account"}
         </h1>
-
         {/* Mode toggle */}
-        <div className="mt-4 grid grid-cols-2 rounded-xl border border-zinc-800 bg-zinc-950/40 p-1">
+        <div className="mt-4 grid grid-cols-2 rounded-xl border border-border bg-raised-bg p-1">
           <button
             type="button"
             onClick={() => setMode("login")}
             className={[
-              "rounded-lg px-3 py-2 text-sm font-semibold",
+              "rounded-lg px-3 py-2 text-sm font-semibold transition",
               mode === "login"
-                ? "bg-zinc-100 text-zinc-950"
-                : "text-zinc-300 hover:text-zinc-100",
+                ? "bg-primary text-primary-fg"
+                : "text-muted-text hover:text-primary-text",
             ].join(" ")}
           >
             Login
@@ -87,76 +74,74 @@ export default function LoginClient() {
             type="button"
             onClick={() => setMode("register")}
             className={[
-              "rounded-lg px-3 py-2 text-sm font-semibold",
+              "rounded-lg px-3 py-2 text-sm font-semibold transition",
               mode === "register"
-                ? "bg-zinc-100 text-zinc-950"
-                : "text-zinc-300 hover:text-zinc-100",
+                ? "bg-primary text-primary-fg"
+                : "text-muted-text hover:text-primary-text",
             ].join(" ")}
           >
             Register
           </button>
         </div>
-        {/* // Handles Google Oauth by redirecting to /api/auth/google/start endpoint
-        /*
-          * Triggers this flow:
-          * 1. Get /api/auth/google/start
-          * 2. Redirect to Google consent screen
-          * 3. Google redirects back to /api/auth/google/callback
-          * 4. Call back sets SESSION_COOKIE_NAME and redirects to APP_URL
-          */}
+        {/* Google OAuth */}
+        {/* // Handles Google Oauth by redirecting to /api/auth/google/start endpoint */}
+        {/* * Triggers this flow: */}
+        {/* * 1. Get /api/auth/google/start */}
+        {/* * 2. Redirect to Google consent screen */}
+        {/* * 3. Google redirects back to /api/auth/google/callback */}
+        {/* * 4. Call back sets SESSION_COOKIE_NAME and redirects to APP_URL */}
         <a
           href="/api/auth/google/start"
-          className="mt-6 block w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-4 py-2 text-center text-sm font-semibold text-zinc-100 hover:border-zinc-600"
+          className="mt-6 block w-full rounded-xl border border-border bg-raised-bg px-4 py-2 text-center text-sm font-semibold text-primary-text hover:border-border-hover"
         >
           Continue with Google
         </a>
-
         {/* Divider */}
         <div className="my-6 flex items-center gap-3">
-          <div className="h-px flex-1 bg-zinc-800" />
-          <span className="text-xs text-zinc-500">or</span>
-          <div className="h-px flex-1 bg-zinc-800" />
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-xs text-muted-text">or</span>
+          <div className="h-px flex-1 bg-border" />
         </div>
-
         {/* Error banner */}
         {error && (
-          <div className="mb-4 rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+          <div className="mb-4 rounded-xl border border-danger bg-danger-bg px-4 py-3 text-sm text-danger-text">
             {error}
           </div>
         )}
-
         {/* Email/password form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Only show username input in register mode */}
           {mode === "register" && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-200">
+              <label className="text-sm font-medium text-primary-text">
                 Username
               </label>
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm outline-none focus:border-zinc-600"
+                className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
                 placeholder="samwong"
               />
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-200">Email</label>
+            <label className="text-sm font-medium text-primary-text">
+              Email
+            </label>
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               required
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm outline-none focus:border-zinc-600"
+              className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
               placeholder="you@example.com"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-200">
+            <label className="text-sm font-medium text-primary-text">
               Password
             </label>
             <input
@@ -164,7 +149,7 @@ export default function LoginClient() {
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               required
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm outline-none focus:border-zinc-600"
+              className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
               placeholder="••••••••"
             />
           </div>
@@ -172,7 +157,7 @@ export default function LoginClient() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-xl bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSubmitting
               ? "Working..."

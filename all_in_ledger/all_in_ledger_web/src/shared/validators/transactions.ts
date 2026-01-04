@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// -------------- Zod Schemas --------------
+
 export const TransactionTypeSchema = z.enum(["EXPENSE", "INCOME"]);
 
 export const TransactionIdSchema = z.coerce
@@ -37,10 +39,21 @@ export const ListTransactionSchema = z
     path: ["from"],
   });
 
-export type TransactionId = z.infer<typeof TransactionIdSchema>
+export const UpdateTransactionSchema = CreateTransactionSchema.partial().refine(
+  (obj) => Object.keys(obj).length > 0,
+  {
+    message: "Request body cannot be empty",
+  },
+);
+
+// -------------- Inferred Zod types --------------
+
+export type TransactionId = z.infer<typeof TransactionIdSchema>;
 
 export type CreateTransactionInput = z.infer<typeof CreateTransactionSchema>;
 
 export type ListTransactionQuery = z.infer<typeof ListTransactionSchema>;
 
 export type TransactionType = z.infer<typeof TransactionTypeSchema>;
+
+export type UpdateTransactionInput = z.infer<typeof UpdateTransactionSchema>;

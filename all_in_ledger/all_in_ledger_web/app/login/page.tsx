@@ -4,11 +4,10 @@ import LoginClient from "./LoginClient"; // Import the client login component (t
 import { getCurrentUserFromRequest } from "@/src/server/auth/currentUser";
 
 export default async function LoginPage() {
-  const cookieStore = cookies(); // Read incoming request cookies on the server
-  const cookieString = (await cookieStore).toString();
-
+  const cookieStore = await cookies(); // Read incoming request cookies on the server
+  const cookieString = cookieStore.toString();
   const req = new Request("http://localhost/login", {
-    headers: { cookies: cookieString },
+    headers: { cookie: cookieString },
   });
 
   const user = await getCurrentUserFromRequest(req);

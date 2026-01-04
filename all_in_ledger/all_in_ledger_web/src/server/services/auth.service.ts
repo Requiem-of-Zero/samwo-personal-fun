@@ -15,10 +15,12 @@ import {
 // A small error helper for clean test assertions
 export class HttpError extends Error {
   public status: number;
+  details?: unknown;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, details?: unknown) {
     super(message);
     this.status = status;
+    this.details = details;
   }
 }
 

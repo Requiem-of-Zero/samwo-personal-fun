@@ -37,7 +37,6 @@ enum TransactionType {
 enum CategoryType {
   EXPENSE
   INCOME
-  BOTH
 }
 
 model User {

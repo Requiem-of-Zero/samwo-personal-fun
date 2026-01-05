@@ -77,7 +77,7 @@ export async function GET(req: Request) {
       });
     }
 
-    const transactions = await listTransactionsForUser(user.id, rawQuery);
+    const transactions = await listTransactionsForUser(user.id, parsed.data);
 
     return NextResponse.json({ transactions }, { status: 200 });
   } catch (error) {

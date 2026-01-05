@@ -36,6 +36,7 @@ export async function listTransactionsForUser(
 
   return prisma.transaction.findMany({
     where: {
+      type: query.type,
       deletedAt: null,
       createdByUserId: userId,
       ...(familyId !== undefined ? { familyId } : {}),

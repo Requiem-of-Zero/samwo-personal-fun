@@ -33,13 +33,19 @@ export default function TransactionsClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<TransactionType | null>(null);
 
   // Other hooks
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const urlTypeRaw = searchParams.get("type");
+  const typeFilter: TransactionType | null =
+    urlTypeRaw &&
+    (urlTypeRaw.toUpperCase() === "EXPENSE" ||
+      urlTypeRaw.toUpperCase() === "INCOME")
+      ? (urlTypeRaw.toUpperCase() as TransactionType)
+      : null;
   /*
    * Component helper function to format query into the url
    * Example: ?type=
@@ -53,7 +59,7 @@ export default function TransactionsClient() {
     const searchParamString = params.toString();
     // console.log(searchParamString)
     // Replace the
-    router.replace(
+    router.push(
       searchParamString
         ? `${pathname}?${searchParamString.toLowerCase()}`
         : pathname,
@@ -74,7 +80,8 @@ export default function TransactionsClient() {
         const params = new URLSearchParams();
         if (typeFilter) params.set("type", typeFilter);
 
-        const url = `/api/transactions${params.toString() ? `?${params.toString()}` : ""}`;
+        // const url = `/api/transactions${params.toString() ? `?${params.toString()}` : ""}`;
+        // const apiUrl = params.toString() ? `/api/transactions?${params.toString()}`
         // console.log("FETCH:", url, "typeFilter:", typeFilter);
 
         // Fetch transactions from the API route
@@ -178,7 +185,7 @@ export default function TransactionsClient() {
               <button
                 type="button"
                 onClick={() => {
-                  setTypeFilter(null);
+                  // setTypeFilter(null);
                   updateTypeInUrl(null);
                 }}
                 className={[
@@ -194,7 +201,7 @@ export default function TransactionsClient() {
               <button
                 type="button"
                 onClick={() => {
-                  setTypeFilter("EXPENSE");
+                  // setTypeFilter("EXPENSE");
                   updateTypeInUrl("expense" as any);
                 }}
                 className={[
@@ -210,7 +217,7 @@ export default function TransactionsClient() {
               <button
                 type="button"
                 onClick={() => {
-                  setTypeFilter("INCOME");
+                  // setTypeFilter("INCOME");
                   updateTypeInUrl("income" as any);
                 }}
                 className={[

@@ -8,8 +8,11 @@ import {
   TransactionType,
 } from "@/src/shared/validators/transactions";
 
-// Helper function to convert from total cents to a dollar amount in preferred currency
-function formatMoney(amountCents: number, currency: string) {
+/**
+ * Format cents into localized currency string
+ * Example: 123456 -> "$1,234.56"
+ */
+export function formatMoney(amountCents: number, currency: string) {
   const amount = amountCents / 100;
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -17,8 +20,10 @@ function formatMoney(amountCents: number, currency: string) {
   }).format(amount);
 }
 
-// Helper function to format the date
-function formatDate(d: Date) {
+/**
+ * Format ISO date string or Date into readable date
+ */
+export function formatDate(d: Date) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 

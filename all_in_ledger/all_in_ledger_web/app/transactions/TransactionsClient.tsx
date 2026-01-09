@@ -40,6 +40,25 @@ export default function TransactionsClient() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  /*
+   * Component helper function to format query into the url
+   * Example: ?type=
+   */
+  function updateTypeInUrl(type: TransactionType | null) {
+    // Clone existing params to preserve for future filters (from/to/familyId)
+    const params = new URLSearchParams(searchParams.toString());
+
+    // If type is null, that means to show without filters, if there is a type, set that in the params with searchParams
+    type === null ? params.delete("type") : params.set("type", type);
+    const searchParamString = params.toString();
+    // console.log(searchParamString)
+    // Replace the
+    router.replace(
+      searchParamString
+        ? `${pathname}?${searchParamString.toLowerCase()}`
+        : pathname,
+    );
+  }
 
   // useEffect for state changes when the component mounts and when the typeFilter changes
   // This useEffect is for updating the view once there has been a change on the typeFilter
@@ -56,7 +75,7 @@ export default function TransactionsClient() {
         if (typeFilter) params.set("type", typeFilter);
 
         const url = `/api/transactions${params.toString() ? `?${params.toString()}` : ""}`;
-        console.log("FETCH:", url, "typeFilter:", typeFilter);
+        // console.log("FETCH:", url, "typeFilter:", typeFilter);
 
         // Fetch transactions from the API route
         const res = await fetch(
@@ -158,7 +177,10 @@ export default function TransactionsClient() {
             <div className="grid w-full grid-cols-3 rounded-xl border border-border bg-raised-bg p-1 sm:max-w-[320px]">
               <button
                 type="button"
-                onClick={() => setTypeFilter(null)}
+                onClick={() => {
+                  setTypeFilter(null);
+                  updateTypeInUrl(null);
+                }}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
                   typeFilter === null
@@ -171,7 +193,10 @@ export default function TransactionsClient() {
 
               <button
                 type="button"
-                onClick={() => setTypeFilter("EXPENSE")}
+                onClick={() => {
+                  setTypeFilter("EXPENSE");
+                  updateTypeInUrl("expense" as any);
+                }}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
                   typeFilter === "EXPENSE"
@@ -184,7 +209,10 @@ export default function TransactionsClient() {
 
               <button
                 type="button"
-                onClick={() => setTypeFilter("INCOME")}
+                onClick={() => {
+                  setTypeFilter("INCOME");
+                  updateTypeInUrl("income" as any);
+                }}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
                   typeFilter === "INCOME"

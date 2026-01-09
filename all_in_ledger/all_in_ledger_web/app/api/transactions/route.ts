@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     try {
       body = await req.json();
-      console.log(body);
+      // console.log(body);
     } catch (error) {
       throw new HttpError("Invalid JSON body", 400);
     }

@@ -12,7 +12,7 @@ export default async function LoginPage() {
 
   const user = await getCurrentUserFromRequest(req);
 
-  console.log(user);
+  // console.log(user);
   if (user) redirect("/transactions"); // If user is already authenticated, send them to the transactions page
 
   return <LoginClient />; // Render the client component (form + submit)

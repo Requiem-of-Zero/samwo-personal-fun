@@ -8,6 +8,7 @@ import {
   TransactionType,
 } from "@/src/shared/validators/transactions";
 import TransactionRow from "./TransactionRow";
+import AddTransactionModal from "./AddTransactionModal";
 import { formatMoney } from "@/src/shared/utils/format";
 
 export default function TransactionsClient() {
@@ -16,6 +17,8 @@ export default function TransactionsClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Other hooks
   const router = useRouter();
@@ -122,7 +125,7 @@ export default function TransactionsClient() {
     }
 
     load(); // Kick off the request
-  }, [typeFilter]); // Refetch when typeFilter changes
+  }, [typeFilter, reloadKey]); // Refetch when typeFilter changes
 
   // useMemo to be able to cache results of calculations between rerenders of the filtering of transactions
   const filtered = useMemo(() => {
@@ -150,15 +153,13 @@ export default function TransactionsClient() {
             <h1 className="text-2xl font-semibold tracking-tight">
               {pageTitle}
             </h1>
-            <p className="mt-1 text-sm text-muted-text">
-              {pageSubtitle}
-            </p>
+            <p className="mt-1 text-sm text-muted-text">{pageSubtitle}</p>
           </div>
 
           <button
             type="button"
             className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg hover:opacity-90"
-            onClick={() => alert("Later: Add transaction modal")}
+            onClick={() => setIsModalOpen(true)}
           >
             Add
           </button>
@@ -263,6 +264,14 @@ export default function TransactionsClient() {
           Next: hook up from/to dates, familyId, pagination, and Add/Edit flows.
         </p>
       </div>
+
+      {/* Add Transactions Modal */}
+      <AddTransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        defaultType={typeFilter ?? "EXPENSE"}
+        onCreated={() => setReloadKey((key) => key + 1)}
+      />
     </main>
   );
 }

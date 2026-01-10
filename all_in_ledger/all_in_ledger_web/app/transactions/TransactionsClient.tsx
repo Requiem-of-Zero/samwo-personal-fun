@@ -1,31 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   TransactionListResponseSchema,
   Transaction,
   TransactionType,
 } from "@/src/shared/validators/transactions";
-
-/**
- * Format cents into localized currency string
- * Example: 123456 -> "$1,234.56"
- */
-export function formatMoney(amountCents: number, currency: string) {
-  const amount = amountCents / 100;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  }).format(amount);
-}
-
-/**
- * Format ISO date string or Date into readable date
- */
-export function formatDate(d: Date) {
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
+import TransactionRow from "./TransactionRow";
+import { formatMoney } from "@/src/shared/utils/format";
 
 export default function TransactionsClient() {
   // Transaction state variables
@@ -46,6 +29,20 @@ export default function TransactionsClient() {
       urlTypeRaw.toUpperCase() === "INCOME")
       ? (urlTypeRaw.toUpperCase() as TransactionType)
       : null;
+
+  const pageTitle =
+    typeFilter === "EXPENSE"
+      ? "Expenses"
+      : typeFilter === "INCOME"
+        ? "Income"
+        : "Transactions";
+
+  const pageSubtitle =
+    typeFilter === "EXPENSE"
+      ? "All outgoing money."
+      : typeFilter === "INCOME"
+        ? "All incoming money"
+        : "Track spending and keep your ledger clean.";
   /*
    * Component helper function to format query into the url
    * Example: ?type=
@@ -151,14 +148,13 @@ export default function TransactionsClient() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">
-              Transactions
+              {pageTitle}
             </h1>
             <p className="mt-1 text-sm text-muted-text">
-              Track spending and keep your ledger clean.
+              {pageSubtitle}
             </p>
           </div>
 
-          {/* Placeholder: we’ll hook this up to a modal or route later */}
           <button
             type="button"
             className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg hover:opacity-90"
@@ -171,23 +167,18 @@ export default function TransactionsClient() {
         {/* Filters card */}
         <div className="rounded-card border border-border bg-surface-bg p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            {/* Search input filters client-side (does not hit server) */}
             <input
-              value={query} // ✅ controlled input reads from state
-              onChange={(e) => setQuery(e.target.value)} // ✅ update state on typing
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search merchant or note..."
               className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
             />
 
             {/* Type segmented control */}
-            {/* This DOES hit server because it changes typeFilter => useEffect refetch */}
             <div className="grid w-full grid-cols-3 rounded-xl border border-border bg-raised-bg p-1 sm:max-w-[320px]">
               <button
                 type="button"
-                onClick={() => {
-                  // setTypeFilter(null);
-                  updateTypeInUrl(null);
-                }}
+                onClick={() => updateTypeInUrl(null)}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
                   typeFilter === null
@@ -200,10 +191,7 @@ export default function TransactionsClient() {
 
               <button
                 type="button"
-                onClick={() => {
-                  // setTypeFilter("EXPENSE");
-                  updateTypeInUrl("expense" as any);
-                }}
+                onClick={() => updateTypeInUrl("EXPENSE")}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
                   typeFilter === "EXPENSE"
@@ -216,10 +204,7 @@ export default function TransactionsClient() {
 
               <button
                 type="button"
-                onClick={() => {
-                  // setTypeFilter("INCOME");
-                  updateTypeInUrl("income" as any);
-                }}
+                onClick={() => updateTypeInUrl("INCOME")}
                 className={[
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
                   typeFilter === "INCOME"
@@ -237,12 +222,12 @@ export default function TransactionsClient() {
             <span className="text-muted-text">
               {isLoading ? "Loading…" : `${filtered.length} shown`}
             </span>
+
             <span className="font-semibold">
               Total: {formatMoney(totalCents, "USD")}
             </span>
           </div>
 
-          {/* Error banner (only renders if error is non-null) */}
           {error && (
             <div className="mt-3 rounded-xl border border-danger bg-danger-bg px-4 py-3 text-sm text-danger-text">
               {error}
@@ -252,7 +237,6 @@ export default function TransactionsClient() {
 
         {/* List card */}
         <div className="rounded-card border border-border bg-surface-bg">
-          {/* Loading state */}
           {isLoading ? (
             <div className="p-4 text-sm text-muted-text">
               Loading transactions…
@@ -263,49 +247,12 @@ export default function TransactionsClient() {
             </div>
           ) : (
             <ul className="divide-y divide-border">
-              {filtered.map((t) => (
-                <li key={t.id} className="p-4 hover:bg-raised-bg">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      {/* Top row: merchant + type chip */}
-                      <div className="flex items-center gap-2">
-                        <span className="truncate font-semibold">
-                          {t.merchant ?? "(No merchant)"}
-                        </span>
-
-                        <span className="rounded-lg border border-border bg-raised-bg px-2 py-0.5 text-xs text-muted-text">
-                          {t.type}
-                        </span>
-                      </div>
-
-                      {/* Bottom row: date + optional note */}
-                      <div className="mt-1 flex items-center gap-2 text-sm text-muted-text">
-                        <span>{formatDate(t.occurredAt)}</span>
-
-                        {t.note && (
-                          <>
-                            <span>•</span>
-                            <span className="truncate">{t.note}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Right side: amount + details button */}
-                    <div className="shrink-0 text-right">
-                      <div className="font-semibold">
-                        {formatMoney(t.amountCents, "USD")}
-                      </div>
-
-                      <button
-                        type="button"
-                        className="mt-1 text-xs text-muted-text hover:text-primary-text"
-                        onClick={() => alert(`Later: open transaction ${t.id}`)}
-                      >
-                        Details
-                      </button>
-                    </div>
-                  </div>
+              {filtered.map((tx) => (
+                <li key={tx.id} className="p-4 hover:bg-raised-bg">
+                  <TransactionRow
+                    tx={tx}
+                    onDetails={(id) => alert(`Later: open transaction ${id}`)}
+                  />
                 </li>
               ))}
             </ul>

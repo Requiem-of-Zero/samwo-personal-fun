@@ -9,6 +9,7 @@ import {
 } from "@/src/shared/validators/transactions";
 import TransactionRow from "./TransactionRow";
 import TransactionModal from "./TransactionModal";
+import TransactionsChart from "./TransactionChart";
 import { formatMoney } from "@/src/shared/utils/format";
 
 export default function TransactionsClient() {
@@ -202,7 +203,8 @@ export default function TransactionsClient() {
             Add
           </button>
         </div>
-
+        {/* Transactions Chart */}
+        <TransactionsChart transactions={items} typeFilter={typeFilter} />
         {/* Filters card */}
         <div className="rounded-card border border-border bg-surface-bg p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

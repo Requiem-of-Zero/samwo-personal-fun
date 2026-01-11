@@ -8,7 +8,7 @@ import {
   TransactionType,
 } from "@/src/shared/validators/transactions";
 import TransactionRow from "./TransactionRow";
-import AddTransactionModal from "./AddTransactionModal";
+import TransactionModal from "./TransactionModal";
 import { formatMoney } from "@/src/shared/utils/format";
 
 export default function TransactionsClient() {
@@ -18,6 +18,7 @@ export default function TransactionsClient() {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTx, setEditingTx] = useState<Transaction | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   // Other hooks
@@ -144,6 +145,40 @@ export default function TransactionsClient() {
     return filtered.reduce((sum, tx) => sum + tx.amountCents, 0);
   }, [filtered]);
 
+  // TransactionRow deletion handler
+  async function handleDelete(id: number) {
+    const ok = window.confirm("Delete this transaction?");
+    if (!ok) return;
+
+    try {
+      setError(null);
+
+      const res = await fetch(`/api/transactions/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const body = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const msg =
+          typeof body?.error === "string"
+            ? body.error
+            : "Failed to delete transaction.";
+        throw new Error(msg);
+      }
+
+      // Easiest refresh: bump reloadKey
+      setReloadKey((k) => k + 1);
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete transaction.",
+      );
+    }
+  }
+
   return (
     <main className="min-h-screen bg-primary-bg text-primary-text px-4 py-8">
       <div className="mx-auto w-full max-w-3xl space-y-4">
@@ -159,7 +194,10 @@ export default function TransactionsClient() {
           <button
             type="button"
             className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg hover:opacity-90"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setEditingTx(null);
+              setIsModalOpen(true);
+            }}
           >
             Add
           </button>
@@ -253,6 +291,11 @@ export default function TransactionsClient() {
                   <TransactionRow
                     tx={tx}
                     onDetails={(id) => alert(`Later: open transaction ${id}`)}
+                    onEdit={(tx) => {
+                      setEditingTx(tx);
+                      setIsModalOpen(true);
+                    }}
+                    onDelete={(id) => handleDelete(id)}
                   />
                 </li>
               ))}
@@ -266,11 +309,12 @@ export default function TransactionsClient() {
       </div>
 
       {/* Add Transactions Modal */}
-      <AddTransactionModal
+      <TransactionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         defaultType={typeFilter ?? "EXPENSE"}
-        onCreated={() => setReloadKey((key) => key + 1)}
+        transaction={editingTx}
+        onSaved={() => setReloadKey((key) => key + 1)}
       />
     </main>
   );

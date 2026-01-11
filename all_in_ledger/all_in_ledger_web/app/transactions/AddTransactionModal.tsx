@@ -23,15 +23,27 @@ export default function AddTransactionModal({
   const [type, setType] = useState<TransactionType>(defaultType);
   const [amountCents, setAmountCents] = useState<number>(0);
   const [merchant, setMerchant] = useState("");
+  const [note, setNote] = useState("");
   const [occurredAt, setOccurredAt] = useState(""); // use datetime-local string
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen) setType(defaultType);
+    if (!isOpen) return;
+
+    setType(defaultType);
+    setAmountCents(0);
+    setMerchant("");
+    setNote("");
+    setOccurredAt("");
+    setError(null);
   }, [defaultType, isOpen]);
 
   if (!isOpen) return null;
+
+  const merchantLabel = type === "INCOME" ? "Source" : "Merchant";
+  const merchantPlaceholder =
+    type === "INCOME" ? "Payroll / Client / Refund" : "Amazon / Safeway / Uber";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,6 +58,7 @@ export default function AddTransactionModal({
         amountCents,
         occurredAt: occurredAtDate,
         merchant: merchant.trim() ? merchant.trim() : undefined,
+        note: note.trim() ? note.trim() : undefined,
       };
 
       const parsed = CreateTransactionSchema.safeParse(payload);
@@ -171,19 +184,31 @@ export default function AddTransactionModal({
             />
           </div>
 
-          {/* Merchant */}
+          {/* Merchant / Source */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-primary-text">
-              Merchant
+              {merchantLabel}
             </label>
             <input
               value={merchant}
               onChange={(e) => setMerchant(e.target.value)}
               className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
-              placeholder="Amazon"
+              placeholder={merchantPlaceholder}
             />
           </div>
-
+          {/* Note */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-primary-text">
+              Note
+            </label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={3}
+              className="w-full resize-none rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
+              placeholder="Optional details (e.g., reimbursed by Sam, tips included, etc.)"
+            />
+          </div>
           {/* Occurred at */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-primary-text">

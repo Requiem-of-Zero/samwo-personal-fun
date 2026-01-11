@@ -21,9 +21,9 @@ export async function POST(req: Request) {
     });
 
     return res;
-  } catch (err: unknown) {
-    if (err instanceof HttpError) {
-      return NextResponse.json({ error: err.message }, { status: err.status });
+  } catch (error: unknown) {
+    if (error instanceof HttpError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
     }
 
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });

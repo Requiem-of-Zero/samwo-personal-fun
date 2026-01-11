@@ -21,12 +21,12 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 30, // 30 days
     });
     return res;
-  } catch (err: unknown) {
-    if (err instanceof ZodError) {
+  } catch (error: unknown) {
+    if (error instanceof ZodError) {
       return NextResponse.json(
         {
           error: "Validation error",
-          issues: err.issues.map((i) => ({
+          issues: error.issues.map((i) => ({
             path: i.path.join("."),
             message: i.message,
           })),
@@ -35,11 +35,11 @@ export async function POST(req: Request) {
       );
     }
 
-    if (err instanceof HttpError) {
-      return NextResponse.json({ error: err.message }, { status: err.status });
+    if (error instanceof HttpError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
     }
 
-    console.error("REGISTER route error:", err);
+    console.error("REGISTER route error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

@@ -21,18 +21,22 @@ export default function AddTransactionModal({
   onCreated,
 }: Props) {
   const [type, setType] = useState<TransactionType>(defaultType);
-  const [amountCents, setAmountCents] = useState<number>(0);
+  // const [amountCents, setAmountCents] = useState<number>(0);
+  const [amountDigits, setAmountDigits] = useState("");
   const [merchant, setMerchant] = useState("");
   const [note, setNote] = useState("");
   const [occurredAt, setOccurredAt] = useState(""); // use datetime-local string
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const amountCents = amountDigits ? Number(amountDigits) : 0;
+  const displayDollars = `$ ${(amountCents / 100).toFixed(2)}`;
+
   useEffect(() => {
     if (!isOpen) return;
 
     setType(defaultType);
-    setAmountCents(0);
+    setAmountDigits("");
     setMerchant("");
     setNote("");
     setOccurredAt("");
@@ -52,6 +56,11 @@ export default function AddTransactionModal({
 
     try {
       const occurredAtDate = occurredAt ? new Date(occurredAt) : new Date();
+
+      if (amountCents <= 0) {
+        setError("Amount must be greater than $0.00");
+        return;
+      }
 
       const payload: CreateTransactionInput = {
         type,
@@ -170,18 +179,32 @@ export default function AddTransactionModal({
           {/* Amount */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-primary-text">
-              Amount (cents)
+              Amount
             </label>
-            <input
-              type="number"
-              min={1}
-              step={1}
-              value={amountCents}
-              onChange={(e) => setAmountCents(Number(e.target.value))}
-              className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
-              placeholder="1299"
-              required
-            />
+
+            <div className="relative">
+              {/* Input */}
+              <input
+                type="text"
+                inputMode="numeric"
+                value={displayDollars}
+                onChange={(e) => {
+                  // Strip everything except digits and store that
+                  const digitsOnly = e.target.value.replace(/\D/g, "");
+                  setAmountDigits(digitsOnly);
+                }}
+                onFocus={(e) => {
+                  // Put cursor at end (prevents caret fighting the formatting)
+                  requestAnimationFrame(() => {
+                    const el = e.target;
+                    el.setSelectionRange(el.value.length, el.value.length);
+                  });
+                }}
+                className="w-full rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm outline-none focus:border-border-hover"
+                placeholder="$0.00"
+                required
+              />
+            </div>
           </div>
 
           {/* Merchant / Source */}

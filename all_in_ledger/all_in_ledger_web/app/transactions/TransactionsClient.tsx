@@ -617,7 +617,7 @@ export default function TransactionsClient() {
                 <li key={tx.id} className="p-4 hover:bg-raised-bg">
                   <TransactionRow
                     tx={tx}
-                    onDetails={(id) => alert(`Later: open transaction ${id}`)}
+                    onDetails={(id) => router.push(`/transactions/${id}`)}
                     onEdit={(tx) => {
                       // Set the transaction to edit and open modal
                       setEditingTx(tx);

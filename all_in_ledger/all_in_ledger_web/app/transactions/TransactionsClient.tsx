@@ -371,7 +371,15 @@ export default function TransactionsClient() {
     // Sum all transaction amounts (in cents)
     // Note: Expenses are positive in the data, so we might want to negate them
     // depending on how you want to display totals
-    return filtered.reduce((sum, tx) => sum + tx.amountCents, 0);
+    let sum = 0;
+
+    for (let i = 0; i < filtered.length; i++) {
+      filtered[i].type === "INCOME"
+        ? (sum += filtered[i].amountCents)
+        : (sum -= filtered[i].amountCents);
+    }
+
+    return sum;
   }, [filtered]); // Recalculate when filtered transactions change
 
   // ==================== EVENT HANDLERS ====================

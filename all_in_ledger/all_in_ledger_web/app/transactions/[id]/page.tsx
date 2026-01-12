@@ -20,6 +20,7 @@
 import { cookies } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { getCurrentUserFromRequest } from "@/src/server/auth/currentUser";
+import { createAuthRequest, getApiUrl } from "@/src/shared/utils/api";
 import TransactionDetailClient from "./TransactionDetailClient";
 
 /**
@@ -66,9 +67,7 @@ export default async function TransactionDetailPage({
    * Create a Request object to check authentication
    * We need to pass cookies to the auth function
    */
-  const req = new Request("http://localhost/transactions", {
-    headers: { cookie: cookieString },
-  });
+  const req = createAuthRequest(cookieString, "/transactions");
 
   /**
    * Check if user is authenticated
@@ -95,7 +94,7 @@ export default async function TransactionDetailPage({
      * cache: "no-store" ensures we always get fresh data (no caching)
      */
     const res = await fetch(
-      `http://localhost:3000/api/transactions/${transactionId}`,
+      getApiUrl(`/api/transactions/${transactionId}`),
       {
         headers: {
           cookie: cookieString, // Include auth cookies

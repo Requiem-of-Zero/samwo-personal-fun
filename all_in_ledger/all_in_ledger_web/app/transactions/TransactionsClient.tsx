@@ -282,7 +282,7 @@ export default function TransactionsClient() {
         // Fetch transactions from the API route
         // credentials: "include" sends cookies for authentication
         const res = await fetch(
-          `http://localhost:3000/api/transactions?${params.toString()}`,
+          `/api/transactions?${params.toString()}`,
           {
             method: "GET",
             credentials: "include", // Include authentication cookies

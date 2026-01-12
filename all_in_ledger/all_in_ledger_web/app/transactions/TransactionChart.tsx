@@ -215,6 +215,7 @@ export default function TransactionsChart({ transactions, typeFilter }: Props) {
           <YAxis
             stroke="currentColor"
             className="text-xs text-muted-text"
+            tick={{fontSize: 12}}
             tickFormatter={formatCurrency} // Formats numbers as currency ($1,234.56)
           />
 

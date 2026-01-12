@@ -452,7 +452,7 @@ export default function TransactionsClient() {
         </div>
 
         {/* Transaction Chart - Visual representation of transaction trends */}
-        <TransactionsChart transactions={items} typeFilter={typeFilter} />
+        <TransactionsChart transactions={filtered} typeFilter={typeFilter} />
 
         {/* Filters Card - Contains all filtering controls */}
         <div className="rounded-card border border-border bg-surface-bg p-4">

@@ -62,7 +62,9 @@ export function createAuthRequest(
   cookieString: string,
   path: string = "/"
 ): Request {
-  return new Request(`http://localhost${path}`, {
+  const baseUrl = getBaseUrl();
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return new Request(`${baseUrl}${normalizedPath}`, {
     headers: { cookie: cookieString },
   });
 }

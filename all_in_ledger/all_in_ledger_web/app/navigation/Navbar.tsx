@@ -23,7 +23,7 @@ type MeUser = {
   id: number;
   email: string;
   username: string;
-}
+};
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -33,6 +33,31 @@ export default function NavBar() {
   // Current user state
   const [me, setMe] = useState<MeUser | null>(null);
   const [isLoadingMe, setIsLoadingMe] = useState(true);
+
+  // Fetch current user on mount
+  useEffect(() => {
+    async function fetchMe() {
+      try {
+        const res = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          const body = await res.json();
+          setMe(body.user);
+        } else {
+          setMe(null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        setMe(null);
+      } finally {
+        setIsLoadingMe(false);
+      }
+    }
+
+    fetchMe();
+  }, []);
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -88,6 +113,15 @@ export default function NavBar() {
               </Link>
             );
           })}
+
+          {/* User Display - Show username or email when logged in */}
+          {!isLoadingMe && me && (
+            <div className="rounded-xl border border-border bg-raised-bg px-3 py-2 text-sm">
+              <span className="font-semibold text-primary-text">
+                {me.username || me.email.split("@")[0]}
+              </span>
+            </div>
+          )}
 
           {/* Logout */}
           <button

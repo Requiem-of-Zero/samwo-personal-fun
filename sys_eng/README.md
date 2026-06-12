@@ -87,15 +87,19 @@ day-01-linux-fundamentals.md
 
 ## Day 2 - Docker and NGINX
 
-- [ ] Docker Images
-- [ ] Docker Containers
-- [ ] Container Lifecycle
-- [ ] Running NGINX
-- [ ] Port Mapping
-- [ ] Docker Networking
-- [ ] Accessing Services Across Network
-- [ ] Container Logs
-- [ ] Persistent Data Concepts
+- [x] Docker Images
+- [x] Docker Containers
+- [x] Container Lifecycle
+- [x] Running NGINX
+- [x] Port Mapping
+- [x] Docker Networking
+- [x] Accessing Services Across Network
+- [x] Container Logs
+- [x] Persistent Data Concepts
+- [x] Docker Volumes
+- [x] Reverse Proxy Fundamentals
+- [x] Container DNS
+- [x] Public vs Private Services
 
 Reference:
 
@@ -218,13 +222,18 @@ day-08-terraform.md
 ## Containers
 
 - [x] Docker Installation
-- [ ] Docker Images
-- [ ] Docker Containers
+- [x] Docker Images
+- [x] Docker Containers
+- [x] Container Lifecycle
+- [x] Port Mapping
+- [x] Docker Volumes
+- [x] Docker Networking
+- [x] Container DNS
 - [ ] Docker Compose
 
 ## Applications
 
-- [ ] NGINX
+- [x] NGINX
 - [ ] Next.js
 - [ ] PostgreSQL
 

@@ -1,10 +1,27 @@
 # Systems Engineering Homelab
 
-## Goal
+# Goal
 
-Build and manage a complete infrastructure stack from scratch using Linux, Docker, cloud services, monitoring, and Infrastructure as Code.
+Build, deploy, and operate a complete web application infrastructure stack from scratch using Linux, Docker, networking, monitoring, cloud services, and Infrastructure as Code.
 
-This project uses a real Ubuntu server administered remotely from an Arch Linux workstation to simulate common Systems Engineering, Infrastructure Engineering, and Platform Engineering workflows.
+This project uses a real Ubuntu server administered remotely from an Arch Linux workstation to simulate common Systems Engineering, Infrastructure Engineering, Platform Engineering, and DevOps workflows.
+
+The objective is not only to deploy applications, but to understand how modern services are packaged, networked, secured, monitored, and maintained in production environments.
+
+By the end of the project, the environment will include:
+
+- Linux server administration
+- SSH and remote management
+- Docker containerization
+- NGINX reverse proxying
+- Multi-container applications with Docker Compose
+- Next.js application hosting
+- PostgreSQL database infrastructure
+- Monitoring and observability with Grafana and Prometheus
+- Cloud infrastructure deployment
+- Infrastructure as Code with Terraform
+
+The final result will be a production-style service stack that demonstrates the full lifecycle of deploying, operating, monitoring, and maintaining modern web services.
 
 ---
 

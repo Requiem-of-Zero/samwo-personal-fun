@@ -133,8 +133,8 @@ day-02-docker-nginx.md
 - [x] Service Discovery
 - [x] Environment Variables
 - [x] Volumes
-- [ ] Custom Networks
-- [ ] Application Architecture
+- [x] Custom Networks
+- [x] Application Architecture
 
 Reference:
 

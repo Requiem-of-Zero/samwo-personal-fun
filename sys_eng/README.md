@@ -128,11 +128,11 @@ day-02-docker-nginx.md
 
 ## Day 3 - Docker Compose
 
-- [ ] Docker Compose
-- [ ] Multi-Container Applications
-- [ ] Service Discovery
-- [ ] Environment Variables
-- [ ] Volumes
+- [x] Docker Compose
+- [x] Multi-Container Applications
+- [x] Service Discovery
+- [x] Environment Variables
+- [x] Volumes
 - [ ] Custom Networks
 - [ ] Application Architecture
 

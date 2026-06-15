@@ -8,7 +8,19 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend
+    networks:
+      - frontend_net
+      - backend_net
 
   backend:
     image: kennethreitz/httpbin
     container_name: homelab-backend
+    environment:
+      - APP_ENV=homelab
+      - SERVICE_NAME=backend
+    networks:
+      - backend_net
+
+networks:
+  frontend_net:
+  backend_net

@@ -146,11 +146,11 @@ day-03-docker-compose.md
 
 ## Day 4 - Application Deployment
 
-- [ ] Next.js Deployment
-- [ ] Reverse Proxy Concepts
-- [ ] Application Configuration
-- [ ] Environment Management
-- [ ] Containerized Workflows
+- [x] Next.js Deployment
+- [x] Reverse Proxy Concepts
+- [x] Application Configuration
+- [x] Environment Management
+- [x] Containerized Workflows
 
 Reference:
 
@@ -162,8 +162,8 @@ day-04-nextjs-deployment.md
 
 ## Day 5 - Database Infrastructure
 
-- [ ] PostgreSQL Container
-- [ ] Persistent Storage
+- [x] PostgreSQL Container
+- [x] Persistent Storage
 - [ ] Database Backups
 - [ ] Database Networking
 - [ ] Application Connectivity

@@ -164,9 +164,9 @@ day-04-nextjs-deployment.md
 
 - [x] PostgreSQL Container
 - [x] Persistent Storage
-- [ ] Database Backups
-- [ ] Database Networking
-- [ ] Application Connectivity
+- [x] Database Backups
+- [x] Database Networking
+- [x] Application Connectivity
 
 Reference:
 

@@ -178,12 +178,12 @@ day-05-postgresql.md
 
 ## Day 6 - Monitoring and Observability
 
-- [ ] Grafana
-- [ ] Prometheus
-- [ ] Metrics Collection
-- [ ] Dashboards
-- [ ] Uptime Monitoring
-- [ ] Alerting Concepts
+- [x] Grafana
+- [x] Prometheus
+- [x] Metrics Collection
+- [x] Dashboards
+- [x] Uptime Monitoring
+- [x] Alerting Concepts
 
 Reference:
 

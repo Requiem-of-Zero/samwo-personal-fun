@@ -195,11 +195,11 @@ day-06-monitoring.md
 
 ## Day 7 - Cloud Infrastructure
 
-- [ ] Cloud VM
+- [x] Cloud VM
 - [ ] Security Groups
 - [ ] Cloud Networking
-- [ ] SSH Access
-- [ ] Public vs Private Networking
+- [x] SSH Access
+- [x] Public vs Private Networking
 
 Reference:
 

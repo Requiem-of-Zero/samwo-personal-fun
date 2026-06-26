@@ -246,23 +246,23 @@ day-08-terraform.md
 - [x] Docker Volumes
 - [x] Docker Networking
 - [x] Container DNS
-- [ ] Docker Compose
+- [x] Docker Compose
 
 ## Applications
 
 - [x] NGINX
-- [ ] Next.js
-- [ ] PostgreSQL
+- [x] Next.js
+- [x] PostgreSQL
 
 ## Monitoring
 
-- [ ] Grafana
-- [ ] Prometheus
-- [ ] Uptime Monitoring
+- [x] Grafana
+- [x] Prometheus
+- [x] Uptime Monitoring
 
 ## Cloud
 
-- [ ] Cloud VM
+- [x] Cloud VM
 - [ ] Cloud Networking
 - [ ] Security Groups
 

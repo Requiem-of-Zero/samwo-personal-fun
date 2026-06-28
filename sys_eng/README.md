@@ -211,12 +211,12 @@ day-07-cloud-vm.md
 
 ## Day 8 - Infrastructure as Code
 
-- [ ] Terraform Fundamentals
-- [ ] Providers
-- [ ] Resources
-- [ ] Variables
-- [ ] State Files
-- [ ] Infrastructure Deployment
+- [x] Terraform Fundamentals
+- [x] Providers
+- [x] Resources
+- [x] Variables
+- [x] State Files
+- [x] Infrastructure Deployment
 
 Reference:
 
@@ -263,13 +263,13 @@ day-08-terraform.md
 ## Cloud
 
 - [x] Cloud VM
-- [ ] Cloud Networking
-- [ ] Security Groups
+- [x] Cloud Networking
+- [x] Security Groups
 
 ## Infrastructure as Code
 
-- [ ] Terraform
-- [ ] Automated Infrastructure Deployment
+- [x] Terraform
+- [x] Automated Infrastructure Deployment
 
 ---
 

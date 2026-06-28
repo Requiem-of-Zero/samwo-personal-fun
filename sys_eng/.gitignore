@@ -12,3 +12,6 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+
+# Terraform-rendered deployment artifacts
+day-08-terraform-docker/generated/

@@ -1,0 +1,10 @@
+{
+  "name": "socket-chat-manual",
+  "version": "0.0.1",
+  "description": "socket.io 2026 chat from user guide",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.22.2",
+    "socket.io": "^4.8.3"
+  }
+}

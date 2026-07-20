@@ -4,7 +4,10 @@
   "description": "socket.io 2026 chat from user guide",
   "type": "module",
   "dependencies": {
+    "@socket.io/cluster-adapter": "^0.3.0",
     "express": "^4.22.2",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
   }
 }
